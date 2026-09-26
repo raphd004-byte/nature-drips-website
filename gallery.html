@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nature Drips — Image Gallery</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      color: #1a2e2a;
+      background: #fafdfb;
+      line-height: 1.6;
+    }
+    :root {
+      --green-deep: #1a3a2e;
+      --green: #2d6a4f;
+      --green-light: #40916c;
+      --green-pale: #95d5b2;
+      --gold: #c9a96e;
+      --cream: #fdf8f0;
+      --white: #fff;
+      --text-muted: #6b7c77;
+      --border: #d4e0d9;
+      --shadow-sm: 0 1px 3px rgba(26,58,46,0.06);
+      --shadow-md: 0 4px 20px rgba(26,58,46,0.08);
+      --radius-sm: 8px;
+      --radius-md: 16px;
+    }
+
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 14px 32px;
+      background: rgba(250,253,251,0.9);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: 1.3rem;
+      color: var(--green-deep);
+    }
+    .logo-icon {
+      width: 34px;
+      height: 34px;
+      background: var(--green);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1rem;
+    }
+
+    .gallery-header {
+      max-width: 1100px;
+      margin: 80px auto 0;
+      padding: 0 32px;
+      text-align: center;
+    }
+    .gallery-header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      color: var(--green-deep);
+      margin-bottom: 8px;
+    }
+    .gallery-header p {
+      color: var(--text-muted);
+      font-size: 1rem;
+    }
+
+    .controls {
+      max-width: 1100px;
+      margin: 24px auto 0;
+      padding: 0 32px;
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .filter-btn {
+      padding: 8px 20px;
+      border-radius: 50px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      font-weight: 500;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .filter-btn.active, .filter-btn:hover {
+      background: var(--green);
+      color: white;
+      border-color: var(--green);
+    }
+
+    .gallery-grid {
+      max-width: 1100px;
+      margin: 32px auto 0;
+      padding: 0 32px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 24px;
+    }
+
+    .gallery-card {
+      background: var(--white);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      border: 2px solid transparent;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+    .gallery-card.selected {
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(45,106,79,0.15), var(--shadow-md);
+    }
+    .gallery-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+    .gallery-card.selected:hover {
+      transform: none;
+    }
+
+    .card-image {
+      width: 100%;
+      aspect-ratio: 4/3;
+      background: #e8f0ec;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .card-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s;
+    }
+    .gallery-card:hover .card-image img {
+      transform: scale(1.03);
+    }
+
+    .card-body {
+      padding: 18px 20px 20px;
+    }
+    .card-body h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      color: var(--green-deep);
+      margin-bottom: 4px;
+    }
+    .card-body .filename {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-family: monospace;
+      margin-bottom: 8px;
+    }
+    .card-body .description {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+    .card-meta {
+      display: flex;
+      gap: 16px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+    }
+    .card-meta span {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .card-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .select-btn {
+      padding: 8px 20px;
+      border-radius: 50px;
+      background: var(--green);
+      color: white;
+      font-weight: 600;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: background 0.2s;
+      border: none;
+    }
+    .select-btn:hover { background: var(--green-light); }
+    .selected-btn {
+      padding: 8px 20px;
+      border-radius: 50px;
+      background: var(--green-pale);
+      color: var(--green-deep);
+      font-weight: 600;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: background 0.2s;
+      border: none;
+    }
+    .selected-btn:hover { background: #7cc4a0; }
+
+    .download-all-btn {
+      display: block;
+      margin: 32px auto 0;
+      padding: 14px 32px;
+      border-radius: 50px;
+      background: var(--green);
+      color: white;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: background 0.2s;
+      border: none;
+    }
+    .download-all-btn:hover { background: var(--green-light); }
+    .download-all-btn:disabled {
+      background: var(--border);
+      color: var(--text-muted);
+      cursor: not-allowed;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--green-deep);
+      color: white;
+      padding: 14px 28px;
+      border-radius: 50px;
+      font-weight: 500;
+      font-size: 0.9rem;
+      opacity: 0;
+      transition: all 0.3s;
+      z-index: 200;
+      pointer-events: none;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @media (max-width: 640px) {
+      .gallery-grid { grid-template-columns: 1fr; }
+      .gallery-header h1 { font-size: 1.6rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="logo">
+      <span class="logo-icon">💧</span>
+      Nature Drips
+    </div>
+    <span style="font-size:0.85rem;color:var(--text-muted)">Image Gallery</span>
+  </nav>
+
+  <div class="gallery-header">
+    <h1>Choose Your Images</h1>
+    <p>Preview and select the visuals you want to use on the website and social media.</p>
+  </div>
+
+  <div class="controls">
+    <button class="filter-btn active" data-filter="all">All Images</button>
+    <button class="filter-btn" data-filter="hero">Hero / Studio</button>
+    <button class="filter-btn" data-filter="social">Social Media</button>
+    <button class="filter-btn" data-filter="background">Backgrounds</button>
+    <button class="filter-btn" data-filter="logo">Logo & Brand</button>
+    <button class="filter-btn" data-filter="promo">Promos</button>
+  </div>
+
+  <div class="gallery-grid" id="galleryGrid"></div>
+
+  <button class="download-all-btn" id="downloadAll" disabled>
+    ↓ Selected: <span id="selectedCount">0</span> — Download Selected
+  </button>
+
+  <div class="toast" id="toast">Copied link to clipboard!</div>
+
+  <script>
+    const images = [
+      {
+        id: 'hero',
+        file: 'hero-studio.jpg',
+        name: 'Premium Wellness Studio',
+        desc: 'A clean, modern IV drip therapy studio interior with soft green and cream tones. Ideal as the main hero/featured image for the website.',
+        category: 'hero',
+        aspect: 'landscape',
+        size: '757 KB',
+        use: 'Website hero, about section header, landing page hero'
+      },
+      {
+        id: 'social',
+        file: 'social-glowing-woman.jpg',
+        name: 'Glowing Woman — Social Post',
+        desc: 'A radiant South Asian woman with glowing skin, framed by botanical greenery. Perfect for Instagram posts and social media promotion.',
+        category: 'social',
+        aspect: 'square',
+        size: '1.7 MB',
+        use: 'Instagram post, Facebook ad, social media hero, testimonial background'
+      },
+      {
+        id: 'background',
+        file: 'section-water-droplets.jpg',
+        name: 'Water Droplets — Abstract Background',
+        desc: 'Flowing water droplets in soft green and blue tones. Clean, minimalist, serene — works beautifully as a section background or divider.',
+        category: 'background',
+        aspect: 'landscape',
+        size: '584 KB',
+        use: 'Website section backgrounds, about section, FAQ background, banner'
+      },
+      {
+        id: 'beauty',
+        file: 'beauty-glow-closeup.jpg',
+        name: 'Radiant Skin — Beauty Closeup',
+        desc: 'Close-up of hydrated, luminous glowing skin with green and gold light accents. Premium beauty and wellness aesthetic.',
+        category: 'social',
+        aspect: 'portrait',
+        size: '973 KB',
+        use: 'Beauty drip section, Instagram post, beauty campaign, close-up feature'
+      },
+      {
+        id: 'logo',
+        file: 'logo-brandmark.png',
+        name: 'Brand Logo Mark',
+        desc: 'Minimalist logo icon — a water droplet integrated with a leaf motif, in forest green and gold. White background, centered, scalable.',
+        category: 'logo',
+        aspect: 'square',
+        size: '443 KB',
+        use: 'Website navbar logo, social media profile pictures, brand assets, favicon base'
+      },
+      {
+        id: 'promo',
+        file: 'instagram-story-promo.jpg',
+        name: 'Instagram Story Promo',
+        desc: 'Vertical 9:16 promotional visual with soft green gradient and glowing droplet aesthetic. Made for Instagram/Facebook stories.',
+        category: 'promo',
+        aspect: 'portrait',
+        size: '533 KB',
+        use: 'Instagram story, Facebook story, WhatsApp status, vertical ad creative'
+      }
+    ];
+
+    const BASE_URL = 'https://raphd004-byte.github.io/nature-drips-website/assets/images/';
+    const grid = document.getElementById('galleryGrid');
+    let selected = new Set();
+    let currentFilter = 'all';
+
+    function render() {
+      const filtered = currentFilter === 'all'
+        ? images
+        : images.filter(img => img.category === currentFilter);
+
+      grid.innerHTML = filtered.map(img => {
+        const isSelected = selected.has(img.id);
+        const fullUrl = BASE_URL + img.file;
+        return `
+          <div class="gallery-card ${isSelected ? 'selected' : ''}" data-id="${img.id}">
+            <div class="card-image">
+              <img src="${fullUrl}" alt="${img.name}" loading="lazy">
+            </div>
+            <div class="card-body">
+              <h3>${img.name}</h3>
+              <div class="filename">${img.file}</div>
+              <div class="description">${img.desc}</div>
+              <div class="card-meta">
+                <span>📐 ${img.aspect}</span>
+                <span>📦 ${img.size}</span>
+              </div>
+              <div class="card-actions">
+                ${isSelected
+                  ? `<button class="selected-btn" data-id="${img.id}">✓ Selected</button>`
+                  : `<button class="select-btn" data-id="${img.id}">Select Image</button>`
+                }
+                <button class="select-btn" style="background:var(--border);color:var(--text-muted);padding:8px 12px;font-size:0.75rem;" data-copy="${fullUrl}">
+                  🔗 Copy URL
+                </button>
+              </div>
+              <div style="margin-top:8px;font-size:0.78rem;color:var(--green-light);">
+                💡 ${img.use}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    grid.addEventListener('click', (e) => {
+      const selectBtn = e.target.closest('.select-btn');
+      const selectedBtn = e.target.closest('.selected-btn');
+      const copyBtn = e.target.closest('[data-copy]');
+
+      if (copyBtn) {
+        const url = copyBtn.dataset.copy;
+        navigator.clipboard.writeText(url).then(() => showToast('Link copied to clipboard!'));
+        return;
+      }
+
+      if (selectBtn) {
+        const id = selectBtn.dataset.id;
+        selected.add(id);
+        render();
+        updateDownloadBtn();
+        showToast(`✓ ${images.find(i => i.id === id).name} selected`);
+        return;
+      }
+
+      if (selectedBtn) {
+        const id = selectedBtn.dataset.id;
+        selected.delete(id);
+        render();
+        updateDownloadBtn();
+        return;
+      }
+    });
+
+    // Also allow clicking the card itself to toggle
+    grid.addEventListener('click', (e) => {
+      const card = e.target.closest('.gallery-card');
+      if (!card) return;
+      // Only toggle if clicking the card itself (not a button)
+      if (e.target.tagName === 'BUTTON' || e.target.closest('button')) return;
+      const id = card.dataset.id;
+      if (selected.has(id)) {
+        selected.delete(id);
+      } else {
+        selected.add(id);
+      }
+      render();
+      updateDownloadBtn();
+    });
+
+    function updateDownloadBtn() {
+      const btn = document.getElementById('downloadAll');
+      const count = document.getElementById('selectedCount');
+      count.textContent = selected.size;
+      btn.disabled = selected.size === 0;
+    }
+
+    document.getElementById('downloadAll').addEventListener('click', () => {
+      if (selected.size === 0) return;
+      const urls = [];
+      selected.forEach(id => {
+        const img = images.find(i => i.id === id);
+        urls.push(BASE_URL + img.file);
+      });
+      // Create a downloadable list
+      const blob = new Blob([urls.map(u => u).join('\n')], { type: 'text/plain' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'nature-drips-selected-images.txt';
+      a.click();
+      URL.revokeObjectURL(a.href);
+      showToast(`Downloaded ${selected.size} image URLs`);
+    });
+
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentFilter = btn.dataset.filter;
+        render();
+      });
+    });
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      clearTimeout(toast._timer);
+      toast._timer = setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+
+    render();
+  </script>
+</body>
+</html>

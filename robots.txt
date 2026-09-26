@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://raphd004-byte.github.io/nature-drips-website/sitemap.xml
