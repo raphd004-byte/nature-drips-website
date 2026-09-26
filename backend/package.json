@@ -1,0 +1,17 @@
+{
+  "name": "nature-drips-backend",
+  "version": "1.0.0",
+  "description": "Admin backend for Nature Drips website — manage services, testimonials, pricing, content",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.0.0",
+    "express": "^4.21.0",
+    "multer": "^1.4.5-lts.1",
+    "cors": "^2.8.5",
+    "uuid": "^11.0.0"
+  }
+}

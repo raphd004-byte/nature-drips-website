@@ -1177,199 +1177,59 @@
   </footer>
 
   <script>
-    // ===== Service Data =====
-    const services = [
-      {
-        id: 1,
-        category: 'hydration',
-        icon: '💧',
-        title: 'Hydration & Electrolyte Drip',
-        description: 'Rapid rehydration with essential electrolytes. Perfect for jet lag recovery, heat exhaustion, or general fatigue.',
-        ingredients: ['Sodium', 'Potassium', 'Magnesium', 'Vitamin C'],
-        price: 'Rs. 8,500',
-        duration: '30–45 min'
-      },
-      {
-        id: 2,
-        category: 'hydration',
-        icon: '🌊',
-        title: 'Jet Lag Recovery Drip',
-        description: 'Specially formulated for travelers. Rehydrates, restores circadian rhythm-supporting nutrients, and clears travel fatigue fast.',
-        ingredients: ['B-Complex', 'Magnesium', 'Electrolytes', 'Glutathione'],
-        price: 'Rs. 10,500',
-        duration: '40–50 min'
-      },
-      {
-        id: 3,
-        category: 'immunity',
-        icon: '🛡️',
-        title: 'Immunity Boost Drip',
-        description: 'High-dose Vitamin C, Zinc, and antioxidant-rich blend to strengthen your immune defenses and speed up recovery.',
-        ingredients: ['Vitamin C (High-Dose)', 'Zinc', 'Selenium', 'B-Complex'],
-        price: 'Rs. 12,000',
-        duration: '45–60 min'
-      },
-      {
-        id: 4,
-        category: 'immunity',
-        icon: '🍊',
-        title: 'Vitamin C Power Drip',
-        description: ' mega-dose ascorbic acid infusion for antioxidant protection, collagen support, and enhanced immune response.',
-        ingredients: ['Vitamin C (5000mg)', 'Glutathione', 'B-Complex'],
-        price: 'Rs. 14,000',
-        duration: '45–60 min'
-      },
-      {
-        id: 5,
-        category: 'beauty',
-        icon: '✨',
-        title: 'Beauty Glow Drip',
-        description: 'Glutathione, Biotin, and collagen-building nutrients for radiant skin, stronger hair, and healthier nails.',
-        ingredients: ['Glutathione', 'Biotin', 'Vitamin C', 'Zinc'],
-        price: 'Rs. 15,000',
-        duration: '45–60 min'
-      },
-      {
-        id: 6,
-        category: 'beauty',
-        icon: '💎',
-        title: 'Collagen Builder Drip',
-        description: 'Nutrient-dense infusion with amino acids and antioxidants that support your body\'s natural collagen production.',
-        ingredients: ['Proline', 'Lysine', 'Vitamin C', 'Copper', 'Glutathione'],
-        price: 'Rs. 16,500',
-        duration: '50–60 min'
-      },
-      {
-        id: 7,
-        category: 'energy',
-        icon: '⚡',
-        title: 'Energy & Performance Drip',
-        description: 'B-Complex, B12, and amino acid blend for athletes, professionals, and anyone needing a serious energy lift.',
-        ingredients: ['B-Complex', 'B12 (High-Dose)', 'Amino Acids', 'Magnesium'],
-        price: 'Rs. 13,500',
-        duration: '45–60 min'
-      },
-      {
-        id: 8,
-        category: 'energy',
-        icon: '🏃',
-        title: 'Athletic Recovery Drip',
-        description: 'Post-workout recovery formula with amino acids, electrolytes, and anti-inflammatory nutrients to help you bounce back faster.',
-        ingredients: ['Amino Acids', 'Electrolytes', 'B-Complex', 'Vitamin C'],
-        price: 'Rs. 14,500',
-        duration: '40–55 min'
-      },
-      {
-        id: 9,
-        category: 'detox',
-        icon: '🌿',
-        title: 'Detox & Cleanse Drip',
-        description: 'Glutathione and antioxidant-rich formulation to combat oxidative stress and support your liver\'s natural detox pathways.',
-        ingredients: ['Glutathione (High-Dose)', 'Vitamin C', 'B-Complex', 'Magnesium'],
-        price: 'Rs. 15,500',
-        duration: '50–60 min'
-      },
-      {
-        id: 10,
-        category: 'detox',
-        icon: '🔄',
-        title: 'Antioxidant Shield Drip',
-        description: 'A powerful blend of antioxidants to neutralize free radicals, reduce inflammation, and support cellular health.',
-        ingredients: ['Glutathione', 'Vitamin C', 'Vitamin E', 'Selenium'],
-        price: 'Rs. 13,000',
-        duration: '45–55 min'
-      },
-      {
-        id: 11,
-        category: 'shots',
-        icon: '💉',
-        title: 'Vitamin B12 Shot (IM)',
-        description: 'Fast-acting intramuscular B12 injection for energy, nerve health, and red blood cell production. Takes less than 5 minutes.',
-        ingredients: ['Vitamin B12 (Cyanocobalamin)'],
-        price: 'Rs. 3,500',
-        duration: '5 min'
-      },
-      {
-        id: 12,
-        category: 'shots',
-        icon: '☀️',
-        title: 'Vitamin D Shot (IM)',
-        description: 'Intramuscular Vitamin D3 injection to support bone health, immunity, and mood — especially helpful during darker months.',
-        ingredients: ['Vitamin D3 (Cholecalciferol)'],
-        price: 'Rs. 3,000',
-        duration: '5 min'
-      },
-      {
-        id: 13,
-        category: 'shots',
-        icon: '🧴',
-        title: 'Glutathione Shot (IM)',
-        description: 'Express intramuscular glutathione shot for antioxidant support, skin brightening, and detox — quick and convenient.',
-        ingredients: ['Glutathione'],
-        price: 'Rs. 4,500',
-        duration: '5 min'
-      }
-    ];
+    // ===== Fetch & Render Data from API =====
+    const API = window.location.hostname === 'raphd004-byte.github.io'
+      ? 'https://raphd004-byte.github.io/nature-drips-website/'
+      : '';
 
-    // ===== FAQ Data =====
-    const faqs = [
-      {
-        q: 'Is IV drip therapy safe?',
-        a: 'Yes, when administered by trained professionals using sterile equipment. Every Nature Drips session begins with a health screening to identify any contraindications. Our practitioners are certified and follow strict hygiene protocols. However, IV therapy is not suitable for everyone — clients with certain heart conditions, kidney disease, or who are pregnant should consult their physician first.'
-      },
-      {
-        q: 'How long does a session take?',
-        a: 'Most IV drip sessions take 30 to 60 minutes from start to finish. Intramuscular (IM) vitamin shots take less than 5 minutes. The exact duration depends on the specific drip formula and your individual response.'
-      },
-      {
-        q: 'Do I need to prepare before my appointment?',
-        a: 'We recommend eating a light meal and drinking plenty of water before your session. This helps your body absorb the nutrients more effectively and minimizes any mild side effects like lightheadedness. Bring a book or your phone — most clients relax during the drip.'
-      },
-      {
-        q: 'How soon will I feel the effects?',
-        a: 'Many clients report feeling refreshed and energized within hours of their session. Some effects — like improved hydration — are immediate. Others, such as skin improvements from beauty drips, may build up over a few sessions. Results vary based on individual needs and the specific formula.'
-      },
-      {
-        q: 'Can I get IV therapy at home?',
-        a: 'Yes! Nature Drips offers both in-clinic sessions and mobile/at-home concierge services in select cities (Karachi, Lahore, Islamabad). Our mobile team brings the full sterile setup to your home or office. Contact us to check availability in your area.'
-      },
-      {
-        q: 'How often should I get IV drips?',
-        a: 'This depends on your wellness goals. Some clients benefit from weekly sessions (e.g., athletes in training), while others prefer monthly maintenance drips. During your consultation, our practitioner will recommend a schedule tailored to your needs and budget.'
-      },
-      {
-        q: 'Do you offer packages or memberships?',
-        a: 'Yes! We offer discounted multi-session packages and a monthly membership program for regular clients. Reach out to our team or visit our booking page for current package rates and savings.'
-      },
-      {
-        q: 'Are there any side effects?',
-        a: 'Side effects are generally mild and uncommon. Some clients experience a temporary cooling sensation during the infusion, mild bruising at the injection site, or slight lightheadedness. These typically resolve quickly. Serious reactions are rare and our team is trained to handle them.'
-      }
-    ];
+    // Stats
+    fetch(`${API}api/stats`)
+      .then(r => r.json())
+      .then(stats => {
+        if (stats.totalServices) {
+          document.querySelector('.stat-value').textContent = stats.totalServices + '+';
+        }
+      })
+      .catch(() => {});
 
     // ===== Render Services =====
     const grid = document.getElementById('servicesGrid');
+    let allServices = [];
+
+    async function loadServices() {
+      try {
+        const res = await fetch(`${API}api/services`);
+        if (!res.ok) throw new Error('Failed to load');
+        allServices = await res.json();
+        renderServices('all');
+      } catch (e) {
+        // Fallback: show empty state
+        grid.innerHTML = '<div class="empty-state"><p>Services temporarily unavailable</p></div>';
+      }
+    }
+
     function renderServices(category = 'all') {
-      const filtered = category === 'all' ? services : services.filter(s => s.category === category);
-      grid.innerHTML = filtered.map(s => `
+      const filtered = category === 'all' ? allServices : allServices.filter(s => s.category === category);
+      grid.innerHTML = filtered.length
+        ? filtered.map(s => `
         <div class="service-card">
-          <div class="service-icon">${s.icon}</div>
+          <div class="service-icon">${s.icon || '💧'}</div>
           <h3>${s.title}</h3>
           <p class="desc">${s.description}</p>
           <div class="service-ingredients">
-            ${s.ingredients.map(i => `<span class="ingredient-tag">${i}</span>`).join('')}
+            ${(s.ingredients || []).map(i => `<span class="ingredient-tag">${i}</span>`).join('')}
           </div>
           <div class="service-bottom">
-            <div class="service-price">${s.price} <span class="from">/session</span></div>
+            <div class="service-price">₨ ${s.price.toLocaleString()} <span class="from">/session</span></div>
             <div class="service-duration">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
               ${s.duration}
             </div>
           </div>
         </div>
-      `).join('');
+      `).join('')
+        : '<div class="empty-state"><p>No services in this category yet</p></div>';
     }
-    renderServices();
 
     // ===== Tabs =====
     document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -1380,23 +1240,119 @@
       });
     });
 
-    // ===== Render FAQ =====
-    const faqGrid = document.getElementById('faqGrid');
-    faqGrid.innerHTML = faqs.map((f, i) => `
-      <div class="faq-item" data-index="${i}">
-        <div class="faq-question">
-          <span>${f.q}</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
-        </div>
-        <div class="faq-answer">${f.a}</div>
-      </div>
-    `).join('');
+    // ===== Render Testimonials =====
+    async function loadTestimonials() {
+      try {
+        const res = await fetch(`${API}api/testimonials`);
+        if (!res.ok) throw new Error('Failed to load');
+        const testimonials = await res.json();
+        const grid = document.querySelector('.testimonials-grid');
+        if (testimonials.length) {
+          grid.innerHTML = testimonials.map(t => `
+            <div class="testimonial-card fade-up">
+              <div class="testimonial-stars">${'★'.repeat(t.rating)}${'☆'.repeat(5 - t.rating)}</div>
+              <p class="testimonial-text">"${t.text}"</p>
+              <div class="testimonial-author">
+                <div class="testimonial-avatar">${t.initials || t.name.slice(0, 2).toUpperCase()}</div>
+                <div>
+                  <div class="testimonial-name">${t.name}</div>
+                  <div class="testimonial-role">${t.role || 'Nature Drips Client'}</div>
+                </div>
+              </div>
+            </div>
+          `).join('');
+          document.querySelectorAll('.testimonial-card').forEach(el => {
+            el.classList.add('visible');
+          });
+        }
+      } catch (e) { /* keep existing testimonials if any */ }
+    }
 
-    faqGrid.querySelectorAll('.faq-item').forEach(item => {
-      item.addEventListener('click', () => {
-        item.classList.toggle('open');
-      });
-    });
+    // ===== Render FAQ =====
+    async function loadFaqs() {
+      try {
+        const res = await fetch(`${API}api/faqs`);
+        if (!res.ok) throw new Error('Failed to load');
+        const faqs = await res.json();
+        const faqGrid = document.getElementById('faqGrid');
+        if (faqs.length) {
+          faqGrid.innerHTML = faqs.map((f, i) => `
+            <div class="faq-item" data-index="${i}">
+              <div class="faq-question">
+                <span>${f.question}</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+              </div>
+              <div class="faq-answer">${f.answer}</div>
+            </div>
+          `).join('');
+          faqGrid.querySelectorAll('.faq-item').forEach(item => {
+            item.addEventListener('click', () => item.classList.toggle('open'));
+          });
+        }
+      } catch (e) { /* keep existing FAQs if any */ }
+    }
+
+    // ===== Load Settings (dynamic text) =====
+    async function loadSettings() {
+      try {
+        const res = await fetch(`${API}api/settings`);
+        if (!res.ok) throw new Error('Failed to load');
+        const settings = await res.json();
+
+        if (settings.heroBadge) document.querySelector('.hero-badge').innerHTML =
+          `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z"/></svg>${settings.heroBadge}`;
+
+        if (settings.heroTitle) {
+          const h1 = document.querySelector('.hero h1');
+          h1.innerHTML = settings.heroTitle.replace(/\. /g, '. <span class="accent">').replace(/\.$/, '.</span>') +
+            (settings.heroTitle.endsWith('.') ? '</span>' : '');
+        }
+
+        if (settings.heroSubtitle) document.querySelector('.hero p').textContent = settings.heroSubtitle;
+
+        if (settings.aboutTitle) document.querySelector('.about-text h2').textContent = settings.aboutTitle;
+
+        if (settings.aboutText) {
+          const aboutP = document.querySelectorAll('.about-text p');
+          if (aboutP[0]) aboutP[0].textContent = settings.aboutText;
+        }
+        if (settings.aboutText2) {
+          const aboutP = document.querySelectorAll('.about-text p');
+          if (aboutP[1]) aboutP[1].textContent = settings.aboutText2;
+        }
+
+        if (settings.ctaTitle) document.querySelector('.booking-cta h2').textContent = settings.ctaTitle;
+        if (settings.ctaText) document.querySelector('.booking-cta p').textContent = settings.ctaText;
+
+        if (settings.stats) {
+          const stats = document.querySelectorAll('.stat-value');
+          if (stats[0]) stats[0].textContent = settings.stats.clients || '5K+';
+          if (stats[1]) stats[1].textContent = settings.stats.satisfaction || '98%';
+          if (stats[2]) stats[2].textContent = settings.stats.avgDuration || '30 min';
+        }
+
+        if (settings.phone) {
+          const phoneEl = document.querySelector('.footer ul:nth-child(4) a[href^="tel"]');
+          if (phoneEl) phoneEl.textContent = settings.phone;
+        }
+        if (settings.email) {
+          const emailEl = document.querySelector('.footer ul:nth-child(4) a[href^="mailto"]');
+          if (emailEl) emailEl.textContent = settings.email;
+        }
+        if (settings.locations) {
+          const locEl = document.querySelectorAll('.footer ul:nth-child(4) a')[2];
+          if (locEl) locEl.textContent = settings.locations;
+        }
+        if (settings.siteTitle) document.title = settings.siteTitle;
+
+      } catch (e) { /* keep defaults */ }
+    }
+
+    // ===== Initialize =====
+    loadServices();
+    loadTestimonials();
+    loadFaqs();
+    loadSettings();
 
     // ===== Mobile Nav =====
     const mobileToggle = document.getElementById('mobileToggle');
