@@ -1,0 +1,1401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nature Drips — Premium IV Drip Therapy & Wellness</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+  <style>
+    /* ===== Reset & Base ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+    body {
+      font-family: 'Inter', sans-serif;
+      color: #1a2e2a;
+      background: #fafdfb;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    .font-serif { font-family: 'Playfair Display', serif; }
+    a { text-decoration: none; color: inherit; }
+    img { max-width: 100%; display: block; }
+    button { cursor: pointer; border: none; font-family: inherit; }
+
+    /* ===== Design Tokens ===== */
+    :root {
+      --green-deep: #1a3a2e;
+      --green: #2d6a4f;
+      --green-light: #40916c;
+      --green-pale: #95d5b2;
+      --gold: #c9a96e;
+      --gold-light: #e8d5a3;
+      --cream: #fdf8f0;
+      --white: #ffffff;
+      --text: #1a2e2a;
+      --text-muted: #6b7c77;
+      --border: #d4e0d9;
+      --shadow-sm: 0 1px 3px rgba(26,58,46,0.06);
+      --shadow-md: 0 4px 20px rgba(26,58,46,0.08);
+      --shadow-lg: 0 12px 48px rgba(26,58,46,0.12);
+      --radius-sm: 8px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --radius-xl: 32px;
+    }
+
+    /* ===== Navbar ===== */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: 16px 40px;
+      background: rgba(250,253,251,0.85);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border-bottom: 1px solid rgba(212,224,217,0.5);
+      transition: box-shadow 0.3s ease;
+    }
+    .navbar.scrolled { box-shadow: var(--shadow-sm); }
+    .navbar-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: var(--green-deep);
+    }
+    .logo-icon {
+      width: 38px;
+      height: 38px;
+      background: var(--green);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.1rem;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      transition: color 0.2s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--green);
+      transition: width 0.3s;
+    }
+    .nav-links a:hover { color: var(--green-deep); }
+    .nav-links a:hover::after { width: 100%; }
+    .nav-cta {
+      background: var(--green);
+      color: white !important;
+      padding: 10px 24px;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 0.88rem;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .nav-cta:hover { background: var(--green-light); transform: translateY(-1px); }
+    .nav-cta::after { display: none !important; }
+    .mobile-toggle {
+      display: none;
+      background: none;
+      padding: 8px;
+      color: var(--green-deep);
+      font-size: 1.5rem;
+    }
+
+    /* ===== Hero ===== */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 120px 40px 80px;
+      background: linear-gradient(160deg, #f0f7f3 0%, #fdf8f0 50%, #e8f0ec 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -200px;
+      right: -200px;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(45,106,79,0.08) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -100px;
+      left: -100px;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(201,169,110,0.06) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .hero-content {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+      width: 100%;
+    }
+    .hero-text { animation: fadeUp 0.8s ease-out; }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(45,106,79,0.08);
+      color: var(--green);
+      padding: 8px 18px;
+      border-radius: 50px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+    .hero-badge svg { width: 16px; height: 16px; }
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: clamp(2.6rem, 5vw, 4rem);
+      color: var(--green-deep);
+      line-height: 1.15;
+      margin-bottom: 24px;
+    }
+    .hero h1 .accent {
+      color: var(--green-light);
+      font-style: italic;
+    }
+    .hero p {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      max-width: 500px;
+      margin-bottom: 40px;
+      line-height: 1.7;
+    }
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 16px 32px;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.25s ease;
+      cursor: pointer;
+    }
+    .btn-primary {
+      background: var(--green);
+      color: white;
+      box-shadow: 0 4px 16px rgba(45,106,79,0.25);
+    }
+    .btn-primary:hover {
+      background: var(--green-light);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(45,106,79,0.3);
+    }
+    .btn-secondary {
+      background: transparent;
+      color: var(--green-deep);
+      border: 2px solid var(--border);
+    }
+    .btn-secondary:hover {
+      border-color: var(--green);
+      background: rgba(45,106,79,0.04);
+      transform: translateY(-2px);
+    }
+    .btn-gold {
+      background: var(--gold);
+      color: var(--green-deep);
+      box-shadow: 0 4px 16px rgba(201,169,110,0.3);
+    }
+    .btn-gold:hover {
+      background: #b8985e;
+      transform: translateY(-2px);
+    }
+
+    .hero-visual {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      animation: fadeUp 0.8s ease-out 0.2s both;
+    }
+    .hero-card {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      padding: 40px;
+      box-shadow: var(--shadow-lg);
+      width: 100%;
+      max-width: 440px;
+      position: relative;
+    }
+    .hero-card-image {
+      width: 100%;
+      aspect-ratio: 4/3;
+      background: linear-gradient(135deg, var(--green-pale), var(--green-light));
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 28px;
+      font-size: 4rem;
+      color: rgba(255,255,255,0.3);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-card-image::after {
+      content: '💧';
+      font-size: 5rem;
+      opacity: 0.6;
+    }
+    .hero-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      color: var(--green-deep);
+      margin-bottom: 8px;
+    }
+    .hero-card .subtitle {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+    }
+    .stats-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+    .stat {
+      text-align: center;
+    }
+    .stat-value {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--green);
+    }
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* ===== Section Common ===== */
+    section { padding: 100px 40px; }
+    .section-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+    .section-header {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+    .section-label {
+      display: inline-block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--green-light);
+      margin-bottom: 16px;
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 3.5vw, 2.8rem);
+      font-weight: 700;
+      color: var(--green-deep);
+      margin-bottom: 16px;
+    }
+    .section-desc {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* ===== About ===== */
+    .about {
+      background: var(--white);
+    }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+    .about-image {
+      width: 100%;
+      aspect-ratio: 4/5;
+      background: linear-gradient(160deg, #d8e8e0, #c5d9cc);
+      border-radius: var(--radius-lg);
+      position: relative;
+      overflow: hidden;
+    }
+    .about-image::after {
+      content: '🌿';
+      font-size: 6rem;
+      opacity: 0.25;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .about-text h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      color: var(--green-deep);
+      margin-bottom: 20px;
+    }
+    .about-text p {
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      line-height: 1.7;
+    }
+    .about-features {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 32px;
+    }
+    .about-feature {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .about-feature-icon {
+      width: 40px;
+      height: 40px;
+      background: rgba(45,106,79,0.08);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 1.1rem;
+    }
+    .about-feature span {
+      font-weight: 500;
+      font-size: 0.9rem;
+      color: var(--text);
+    }
+
+    /* ===== Services / Menu ===== */
+    .services {
+      background: linear-gradient(180deg, #fafdfb, #f0f7f3);
+    }
+    .services-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 48px;
+      flex-wrap: wrap;
+    }
+    .tab-btn {
+      padding: 10px 24px;
+      border-radius: 50px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      font-weight: 500;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      transition: all 0.2s;
+    }
+    .tab-btn.active, .tab-btn:hover {
+      background: var(--green);
+      color: white;
+      border-color: var(--green);
+    }
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 24px;
+    }
+    .service-card {
+      background: var(--white);
+      border-radius: var(--radius-md);
+      padding: 32px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid transparent;
+      transition: all 0.3s ease;
+      cursor: default;
+      position: relative;
+      overflow: hidden;
+    }
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--green-pale);
+      transform: scaleX(0);
+      transition: transform 0.3s;
+    }
+    .service-card:hover {
+      box-shadow: var(--shadow-md);
+      border-color: var(--green-pale);
+      transform: translateY(-4px);
+    }
+    .service-card:hover::before { transform: scaleX(1); }
+    .service-icon {
+      width: 56px;
+      height: 56px;
+      background: rgba(45,106,79,0.08);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      margin-bottom: 20px;
+    }
+    .service-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem;
+      color: var(--green-deep);
+      margin-bottom: 8px;
+    }
+    .service-card .desc {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+    .service-ingredients {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 20px;
+    }
+    .ingredient-tag {
+      background: rgba(45,106,79,0.06);
+      color: var(--green);
+      padding: 4px 12px;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+    .service-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+    .service-price {
+      font-weight: 700;
+      font-size: 1.15rem;
+      color: var(--green-deep);
+    }
+    .service-price .from { font-weight: 400; font-size: 0.8rem; color: var(--text-muted); }
+    .service-duration {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* ===== How It Works ===== */
+    .how-it-works {
+      background: var(--green-deep);
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+    .how-it-works::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(ellipse at 30% 50%, rgba(45,106,79,0.3) 0%, transparent 60%),
+                  radial-gradient(ellipse at 70% 80%, rgba(201,169,110,0.08) 0%, transparent 50%);
+    }
+    .how-it-works .section-label { color: var(--gold); }
+    .how-it-works .section-title { color: white; }
+    .how-it-works .section-desc { color: rgba(255,255,255,0.7); }
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 32px;
+      position: relative;
+    }
+    .step {
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+    .step-number {
+      width: 64px;
+      height: 64px;
+      background: rgba(201,169,110,0.15);
+      border: 2px solid var(--gold);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--gold);
+      margin: 0 auto 20px;
+    }
+    .step h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: white;
+    }
+    .step p {
+      font-size: 0.88rem;
+      color: rgba(255,255,255,0.65);
+      line-height: 1.6;
+    }
+    .step-arrow {
+      position: absolute;
+      top: 50%;
+      right: -16px;
+      transform: translateY(-50%);
+      color: var(--gold);
+      font-size: 1.4rem;
+      opacity: 0.4;
+    }
+    .step:last-child .step-arrow { display: none; }
+
+    /* ===== Testimonials ===== */
+    .testimonials {
+      background: var(--white);
+    }
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+    }
+    .testimonial-card {
+      background: var(--cream);
+      border-radius: var(--radius-md);
+      padding: 32px;
+      position: relative;
+    }
+    .testimonial-stars {
+      color: var(--gold);
+      font-size: 0.9rem;
+      margin-bottom: 16px;
+      letter-spacing: 2px;
+    }
+    .testimonial-text {
+      font-size: 0.95rem;
+      color: var(--text);
+      line-height: 1.7;
+      margin-bottom: 20px;
+      font-style: italic;
+    }
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .testimonial-avatar {
+      width: 44px;
+      height: 44px;
+      background: var(--green-pale);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      color: var(--green-deep);
+      font-size: 0.9rem;
+    }
+    .testimonial-name {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text);
+    }
+    .testimonial-role {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* ===== FAQ ===== */
+    .faq {
+      background: #f0f7f3;
+    }
+    .faq-grid {
+      max-width: 800px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .faq-item {
+      background: var(--white);
+      border-radius: var(--radius-sm);
+      padding: 24px 28px;
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+      transition: box-shadow 0.2s;
+      border: 1px solid transparent;
+    }
+    .faq-item:hover { box-shadow: var(--shadow-md); border-color: var(--green-pale); }
+    .faq-question {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-weight: 600;
+      font-size: 1rem;
+      color: var(--green-deep);
+      gap: 16px;
+    }
+    .faq-question svg {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      transition: transform 0.3s;
+      color: var(--green-light);
+    }
+    .faq-item.open .faq-question svg { transform: rotate(45deg); }
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease, margin-top 0.35s;
+      color: var(--text-muted);
+      font-size: 0.92rem;
+      line-height: 1.6;
+    }
+    .faq-item.open .faq-answer {
+      max-height: 300px;
+      margin-top: 12px;
+    }
+
+    /* ===== Booking CTA ===== */
+    .booking-cta {
+      background: linear-gradient(135deg, var(--green) 0%, var(--green-light) 100%);
+      color: white;
+      text-align: center;
+      padding: 100px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+    .booking-cta::before {
+      content: '';
+      position: absolute;
+      top: -60px;
+      right: -60px;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .booking-cta h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 3.5vw, 2.8rem);
+      margin-bottom: 16px;
+    }
+    .booking-cta p {
+      font-size: 1.05rem;
+      opacity: 0.85;
+      max-width: 500px;
+      margin: 0 auto 36px;
+      line-height: 1.7;
+    }
+    .booking-cta .btn-gold {
+      padding: 18px 40px;
+      font-size: 1rem;
+    }
+
+    /* ===== Footer ===== */
+    .footer {
+      background: var(--green-deep);
+      color: rgba(255,255,255,0.7);
+      padding: 60px 40px 30px;
+    }
+    .footer-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 48px;
+      margin-bottom: 48px;
+    }
+    .footer-brand .logo {
+      color: white;
+      margin-bottom: 16px;
+    }
+    .footer-brand .logo .logo-icon { background: var(--gold); }
+    .footer-brand p {
+      font-size: 0.88rem;
+      line-height: 1.7;
+      max-width: 300px;
+    }
+    .footer h4 {
+      color: white;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 20px;
+    }
+    .footer ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .footer ul a {
+      font-size: 0.88rem;
+      transition: color 0.2s;
+    }
+    .footer ul a:hover { color: white; }
+    .footer-bottom {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 0.82rem;
+    }
+    .footer-social {
+      display: flex;
+      gap: 16px;
+    }
+    .footer-social a {
+      width: 40px;
+      height: 40px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      transition: background 0.2s;
+    }
+    .footer-social a:hover { background: rgba(255,255,255,0.15); }
+
+    /* ===== Animations ===== */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .fade-up {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 1024px) {
+      .hero-content { grid-template-columns: 1fr; gap: 48px; }
+      .hero-visual { order: -1; }
+      .hero-card { max-width: 380px; }
+      .about-grid { grid-template-columns: 1fr; gap: 48px; }
+      .steps-grid { grid-template-columns: repeat(2, 1fr); }
+      .step-arrow { display: none; }
+      .testimonials-grid { grid-template-columns: 1fr 1fr; }
+      .footer-inner { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 768px) {
+      .navbar { padding: 12px 20px; }
+      .nav-links { display: none; }
+      .mobile-toggle { display: block; }
+      .nav-links.open {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: var(--white);
+        padding: 20px 24px;
+        box-shadow: var(--shadow-md);
+        border-bottom: 1px solid var(--border);
+        gap: 20px;
+      }
+      section { padding: 64px 20px; }
+      .hero { padding: 100px 20px 60px; }
+      .hero h1 { font-size: 2.2rem; }
+      .services-grid { grid-template-columns: 1fr; }
+      .testimonials-grid { grid-template-columns: 1fr; }
+      .steps-grid { grid-template-columns: 1fr; gap: 24px; }
+      .about-features { grid-template-columns: 1fr; }
+      .footer-inner { grid-template-columns: 1fr; gap: 32px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== Navbar ===== -->
+  <nav class="navbar" id="navbar">
+    <div class="navbar-inner">
+      <a href="#" class="logo">
+        <span class="logo-icon">💧</span>
+        Nature Drips
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#about">About</a></li>
+        <li><a href="#services">Our Menu</a></li>
+        <li><a href="#how-it-works">How It Works</a></li>
+        <li><a href="#testimonials">Testimonials</a></li>
+        <li><a href="#faq">FAQ</a></li>
+        <li><a href="#booking" class="nav-cta">Book Now</a></li>
+      </ul>
+      <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle navigation">☰</button>
+    </div>
+  </nav>
+
+  <!-- ===== Hero ===== -->
+  <section class="hero" id="hero">
+    <div class="hero-content">
+      <div class="hero-text">
+        <div class="hero-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z"/></svg>
+          Pakistan's Premium IV Wellness
+        </div>
+        <h1>Rehydrate. <span class="accent">Revitalize</span>. Renew.</h1>
+        <p>Tailored IV drip therapy and vitamin treatments designed to boost your energy, strengthen your immunity, and bring your natural glow back — delivered by certified wellness professionals.</p>
+        <div class="hero-actions">
+          <a href="#booking" class="btn btn-primary">
+            Book a Consultation
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <a href="#services" class="btn btn-secondary">View Our Menu</a>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-card">
+          <div class="hero-card-image"></div>
+          <h3>The Nature Drips Difference</h3>
+          <p class="subtitle">Custom IV blends personalized to your body's needs</p>
+          <div class="stats-row">
+            <div class="stat">
+              <div class="stat-value">5K+</div>
+              <div class="stat-label">Happy Clients</div>
+            </div>
+            <div class="stat">
+              <div class="stat-value">98%</div>
+              <div class="stat-label">Satisfaction</div>
+            </div>
+            <div class="stat">
+              <div class="stat-value">30 min</div>
+              <div class="stat-label">Avg. Session</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== About ===== -->
+  <section class="about" id="about">
+    <div class="section-inner">
+      <div class="about-grid">
+        <div class="about-image fade-up"></div>
+        <div class="about-text fade-up">
+          <span class="section-label">Who We Are</span>
+          <h2>Wellness, Delivered at the Cellular Level</h2>
+          <p>At Nature Drips, we believe true vitality starts from within. Our medically formulated IV drip therapies bypass the digestive system entirely, delivering 100% of nutrients directly into your bloodstream for faster, more effective absorption.</p>
+          <p>Every treatment is personalized after a brief health screening — because your body isn't generic, and neither are our blends. Our certified wellness practitioners combine modern science with a holistic, client-first approach.</p>
+          <div class="about-features">
+            <div class="about-feature">
+              <div class="about-feature-icon">🩺</div>
+              <span>Certified practitioners</span>
+            </div>
+            <div class="about-feature">
+              <div class="about-feature-icon">🔬</div>
+              <span>Science-backed formulas</span>
+            </div>
+            <div class="about-feature">
+              <div class="about-feature-icon">🏠</div>
+              <span>In-clinic & at-home options</span>
+            </div>
+            <div class="about-feature">
+              <div class="about-feature-icon">💎</div>
+              <span>Premium sterile equipment</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Services ===== -->
+  <section class="services" id="services">
+    <div class="section-inner">
+      <div class="section-header fade-up">
+        <span class="section-label">Our Menu</span>
+        <h2 class="section-title">IV Drip Therapies & Vitamin Shots</h2>
+        <p class="section-desc">From rapid rehydration to full-spectrum beauty blends — every formula is tailored to your wellness goal.</p>
+      </div>
+      <div class="services-tabs fade-up">
+        <button class="tab-btn active" data-category="all">All Treatments</button>
+        <button class="tab-btn" data-category="hydration">Hydration</button>
+        <button class="tab-btn" data-category="immunity">Immunity</button>
+        <button class="tab-btn" data-category="beauty">Beauty & Glow</button>
+        <button class="tab-btn" data-category="energy">Energy & Performance</button>
+        <button class="tab-btn" data-category="detox">Detox</button>
+        <button class="tab-btn" data-category="shots">Vitamin Shots</button>
+      </div>
+      <div class="services-grid" id="servicesGrid">
+        <!-- Cards injected by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== How It Works ===== -->
+  <section class="how-it-works" id="how-it-works">
+    <div class="section-inner">
+      <div class="section-header fade-up">
+        <span class="section-label">Simple Process</span>
+        <h2 class="section-title">How It Works</h2>
+        <p class="section-desc">From booking to brighter skin — your journey takes just a few steps.</p>
+      </div>
+      <div class="steps-grid">
+        <div class="step fade-up">
+          <div class="step-number">1</div>
+          <h3>Book Your Session</h3>
+          <p>Schedule online or reach out via phone. Tell us about your wellness goals and any health considerations.</p>
+          <span class="step-arrow">→</span>
+        </div>
+        <div class="step fade-up">
+          <div class="step-number">2</div>
+          <h3>Health Screening</h3>
+          <p>A quick 5-minute intake with our practitioner to ensure the right formula for your body and needs.</p>
+          <span class="step-arrow">→</span>
+        </div>
+        <div class="step fade-up">
+          <div class="step-number">3</div>
+          <h3>Your IV Drip</h3>
+          <p>Relax for 30–60 minutes as the blend works its way into your system. Most people read, rest, or scroll.</p>
+          <span class="step-arrow">→</span>
+        </div>
+        <div class="step fade-up">
+          <div class="step-number">4</div>
+          <h3>Feel the Difference</h3>
+          <p>Leave rehydrated, refreshed, and renewed. Many clients feel results within hours — others see full effects over a few days.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Testimonials ===== -->
+  <section class="testimonials" id="testimonials">
+    <div class="section-inner">
+      <div class="section-header fade-up">
+        <span class="section-label">Real Stories</span>
+        <h2 class="section-title">What Our Clients Say</h2>
+        <p class="section-desc">Thousands of Pakistanis have made Nature Drips part of their wellness routine.</p>
+      </div>
+      <div class="testimonials-grid">
+        <div class="testimonial-card fade-up">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">"I was skeptical at first, but after my first hydration drip I felt like a completely different person. The jet lag vanished in an hour. Now I book monthly."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">AK</div>
+            <div>
+              <div class="testimonial-name">Ayesha Khan</div>
+              <div class="testimonial-role">Karachi · Frequent Traveler</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card fade-up">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">"The beauty glow drip is no joke. My skin has never looked this clear. I've recommended Nature Drips to literally everyone in my circle."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">SM</div>
+            <div>
+              <div class="testimonial-name">Sana Malik</div>
+              <div class="testimonial-role">Lahore · Beauty Enthusiast</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card fade-up">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">"As an athlete, recovery is everything. The B-complex and amino acid blend has noticeably improved my recovery time and energy levels. Worth every rupee."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">TH</div>
+            <div>
+              <div class="testimonial-name">Tahir Hussain</div>
+              <div class="testimonial-role">Islamabad · Marathon Runner</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FAQ ===== -->
+  <section class="faq" id="faq">
+    <div class="section-inner">
+      <div class="section-header fade-up">
+        <span class="section-label">Questions?</span>
+        <h2 class="section-title">Frequently Asked</h2>
+        <p class="section-desc">Everything you need to know before your first Nature Drips experience.</p>
+      </div>
+      <div class="faq-grid" id="faqGrid">
+        <!-- Injected by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Booking CTA ===== -->
+  <section class="booking-cta" id="booking">
+    <div class="section-inner fade-up">
+      <h2>Ready to Feel Your Best?</h2>
+      <p>Book a consultation and let our practitioners design the perfect IV drip for your body and your goals. Your first visit includes a complimentary wellness screening.</p>
+      <a href="#" class="btn btn-gold">
+        Book Your Session
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- ===== Footer ===== -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <a href="#" class="logo">
+          <span class="logo-icon">💧</span>
+          Nature Drips
+        </a>
+        <p>Pakistan's premier IV drip therapy and wellness brand. Rehydrate, revitalize, and renew — customized to you.</p>
+      </div>
+      <div>
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="#about">About Us</a></li>
+          <li><a href="#services">Our Menu</a></li>
+          <li><a href="#how-it-works">How It Works</a></li>
+          <li><a href="#faq">FAQ</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Services</h4>
+        <ul>
+          <li><a href="#services">IV Drip Therapy</a></li>
+          <li><a href="#services">Vitamin Shots</a></li>
+          <li><a href="#services">Beauty & Glow</a></li>
+          <li><a href="#services">Immunity Boost</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="tel:+923001234567">+92 300 1234567</a></li>
+          <li><a href="mailto:hello@thenaturedrip.pk">hello@thenaturedrip.pk</a></li>
+          <li><a href="#">Karachi · Lahore · Islamabad</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Nature Drips. All rights reserved. Wellness and hydration therapies designed to support general well-being. Not intended to diagnose, treat, cure, or prevent any disease.</span>
+      <div class="footer-social">
+        <a href="#" aria-label="Instagram">📷</a>
+        <a href="#" aria-label="Facebook">👍</a>
+        <a href="#" aria-label="WhatsApp">💬</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ===== Service Data =====
+    const services = [
+      {
+        id: 1,
+        category: 'hydration',
+        icon: '💧',
+        title: 'Hydration & Electrolyte Drip',
+        description: 'Rapid rehydration with essential electrolytes. Perfect for jet lag recovery, heat exhaustion, or general fatigue.',
+        ingredients: ['Sodium', 'Potassium', 'Magnesium', 'Vitamin C'],
+        price: 'Rs. 8,500',
+        duration: '30–45 min'
+      },
+      {
+        id: 2,
+        category: 'hydration',
+        icon: '🌊',
+        title: 'Jet Lag Recovery Drip',
+        description: 'Specially formulated for travelers. Rehydrates, restores circadian rhythm-supporting nutrients, and clears travel fatigue fast.',
+        ingredients: ['B-Complex', 'Magnesium', 'Electrolytes', 'Glutathione'],
+        price: 'Rs. 10,500',
+        duration: '40–50 min'
+      },
+      {
+        id: 3,
+        category: 'immunity',
+        icon: '🛡️',
+        title: 'Immunity Boost Drip',
+        description: 'High-dose Vitamin C, Zinc, and antioxidant-rich blend to strengthen your immune defenses and speed up recovery.',
+        ingredients: ['Vitamin C (High-Dose)', 'Zinc', 'Selenium', 'B-Complex'],
+        price: 'Rs. 12,000',
+        duration: '45–60 min'
+      },
+      {
+        id: 4,
+        category: 'immunity',
+        icon: '🍊',
+        title: 'Vitamin C Power Drip',
+        description: ' mega-dose ascorbic acid infusion for antioxidant protection, collagen support, and enhanced immune response.',
+        ingredients: ['Vitamin C (5000mg)', 'Glutathione', 'B-Complex'],
+        price: 'Rs. 14,000',
+        duration: '45–60 min'
+      },
+      {
+        id: 5,
+        category: 'beauty',
+        icon: '✨',
+        title: 'Beauty Glow Drip',
+        description: 'Glutathione, Biotin, and collagen-building nutrients for radiant skin, stronger hair, and healthier nails.',
+        ingredients: ['Glutathione', 'Biotin', 'Vitamin C', 'Zinc'],
+        price: 'Rs. 15,000',
+        duration: '45–60 min'
+      },
+      {
+        id: 6,
+        category: 'beauty',
+        icon: '💎',
+        title: 'Collagen Builder Drip',
+        description: 'Nutrient-dense infusion with amino acids and antioxidants that support your body\'s natural collagen production.',
+        ingredients: ['Proline', 'Lysine', 'Vitamin C', 'Copper', 'Glutathione'],
+        price: 'Rs. 16,500',
+        duration: '50–60 min'
+      },
+      {
+        id: 7,
+        category: 'energy',
+        icon: '⚡',
+        title: 'Energy & Performance Drip',
+        description: 'B-Complex, B12, and amino acid blend for athletes, professionals, and anyone needing a serious energy lift.',
+        ingredients: ['B-Complex', 'B12 (High-Dose)', 'Amino Acids', 'Magnesium'],
+        price: 'Rs. 13,500',
+        duration: '45–60 min'
+      },
+      {
+        id: 8,
+        category: 'energy',
+        icon: '🏃',
+        title: 'Athletic Recovery Drip',
+        description: 'Post-workout recovery formula with amino acids, electrolytes, and anti-inflammatory nutrients to help you bounce back faster.',
+        ingredients: ['Amino Acids', 'Electrolytes', 'B-Complex', 'Vitamin C'],
+        price: 'Rs. 14,500',
+        duration: '40–55 min'
+      },
+      {
+        id: 9,
+        category: 'detox',
+        icon: '🌿',
+        title: 'Detox & Cleanse Drip',
+        description: 'Glutathione and antioxidant-rich formulation to combat oxidative stress and support your liver\'s natural detox pathways.',
+        ingredients: ['Glutathione (High-Dose)', 'Vitamin C', 'B-Complex', 'Magnesium'],
+        price: 'Rs. 15,500',
+        duration: '50–60 min'
+      },
+      {
+        id: 10,
+        category: 'detox',
+        icon: '🔄',
+        title: 'Antioxidant Shield Drip',
+        description: 'A powerful blend of antioxidants to neutralize free radicals, reduce inflammation, and support cellular health.',
+        ingredients: ['Glutathione', 'Vitamin C', 'Vitamin E', 'Selenium'],
+        price: 'Rs. 13,000',
+        duration: '45–55 min'
+      },
+      {
+        id: 11,
+        category: 'shots',
+        icon: '💉',
+        title: 'Vitamin B12 Shot (IM)',
+        description: 'Fast-acting intramuscular B12 injection for energy, nerve health, and red blood cell production. Takes less than 5 minutes.',
+        ingredients: ['Vitamin B12 (Cyanocobalamin)'],
+        price: 'Rs. 3,500',
+        duration: '5 min'
+      },
+      {
+        id: 12,
+        category: 'shots',
+        icon: '☀️',
+        title: 'Vitamin D Shot (IM)',
+        description: 'Intramuscular Vitamin D3 injection to support bone health, immunity, and mood — especially helpful during darker months.',
+        ingredients: ['Vitamin D3 (Cholecalciferol)'],
+        price: 'Rs. 3,000',
+        duration: '5 min'
+      },
+      {
+        id: 13,
+        category: 'shots',
+        icon: '🧴',
+        title: 'Glutathione Shot (IM)',
+        description: 'Express intramuscular glutathione shot for antioxidant support, skin brightening, and detox — quick and convenient.',
+        ingredients: ['Glutathione'],
+        price: 'Rs. 4,500',
+        duration: '5 min'
+      }
+    ];
+
+    // ===== FAQ Data =====
+    const faqs = [
+      {
+        q: 'Is IV drip therapy safe?',
+        a: 'Yes, when administered by trained professionals using sterile equipment. Every Nature Drips session begins with a health screening to identify any contraindications. Our practitioners are certified and follow strict hygiene protocols. However, IV therapy is not suitable for everyone — clients with certain heart conditions, kidney disease, or who are pregnant should consult their physician first.'
+      },
+      {
+        q: 'How long does a session take?',
+        a: 'Most IV drip sessions take 30 to 60 minutes from start to finish. Intramuscular (IM) vitamin shots take less than 5 minutes. The exact duration depends on the specific drip formula and your individual response.'
+      },
+      {
+        q: 'Do I need to prepare before my appointment?',
+        a: 'We recommend eating a light meal and drinking plenty of water before your session. This helps your body absorb the nutrients more effectively and minimizes any mild side effects like lightheadedness. Bring a book or your phone — most clients relax during the drip.'
+      },
+      {
+        q: 'How soon will I feel the effects?',
+        a: 'Many clients report feeling refreshed and energized within hours of their session. Some effects — like improved hydration — are immediate. Others, such as skin improvements from beauty drips, may build up over a few sessions. Results vary based on individual needs and the specific formula.'
+      },
+      {
+        q: 'Can I get IV therapy at home?',
+        a: 'Yes! Nature Drips offers both in-clinic sessions and mobile/at-home concierge services in select cities (Karachi, Lahore, Islamabad). Our mobile team brings the full sterile setup to your home or office. Contact us to check availability in your area.'
+      },
+      {
+        q: 'How often should I get IV drips?',
+        a: 'This depends on your wellness goals. Some clients benefit from weekly sessions (e.g., athletes in training), while others prefer monthly maintenance drips. During your consultation, our practitioner will recommend a schedule tailored to your needs and budget.'
+      },
+      {
+        q: 'Do you offer packages or memberships?',
+        a: 'Yes! We offer discounted multi-session packages and a monthly membership program for regular clients. Reach out to our team or visit our booking page for current package rates and savings.'
+      },
+      {
+        q: 'Are there any side effects?',
+        a: 'Side effects are generally mild and uncommon. Some clients experience a temporary cooling sensation during the infusion, mild bruising at the injection site, or slight lightheadedness. These typically resolve quickly. Serious reactions are rare and our team is trained to handle them.'
+      }
+    ];
+
+    // ===== Render Services =====
+    const grid = document.getElementById('servicesGrid');
+    function renderServices(category = 'all') {
+      const filtered = category === 'all' ? services : services.filter(s => s.category === category);
+      grid.innerHTML = filtered.map(s => `
+        <div class="service-card">
+          <div class="service-icon">${s.icon}</div>
+          <h3>${s.title}</h3>
+          <p class="desc">${s.description}</p>
+          <div class="service-ingredients">
+            ${s.ingredients.map(i => `<span class="ingredient-tag">${i}</span>`).join('')}
+          </div>
+          <div class="service-bottom">
+            <div class="service-price">${s.price} <span class="from">/session</span></div>
+            <div class="service-duration">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              ${s.duration}
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+    renderServices();
+
+    // ===== Tabs =====
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderServices(btn.dataset.category);
+      });
+    });
+
+    // ===== Render FAQ =====
+    const faqGrid = document.getElementById('faqGrid');
+    faqGrid.innerHTML = faqs.map((f, i) => `
+      <div class="faq-item" data-index="${i}">
+        <div class="faq-question">
+          <span>${f.q}</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+        </div>
+        <div class="faq-answer">${f.a}</div>
+      </div>
+    `).join('');
+
+    faqGrid.querySelectorAll('.faq-item').forEach(item => {
+      item.addEventListener('click', () => {
+        item.classList.toggle('open');
+      });
+    });
+
+    // ===== Mobile Nav =====
+    const mobileToggle = document.getElementById('mobileToggle');
+    const navLinks = document.getElementById('navLinks');
+    mobileToggle.addEventListener('click', () => {
+      navLinks.classList.toggle('open');
+    });
+    navLinks.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => navLinks.classList.remove('open'));
+    });
+
+    // ===== Navbar scroll effect =====
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 20);
+    });
+
+    // ===== Scroll animations =====
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
