@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nature Drips — Admin Panel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      color: #1a2e2a;
+      background: #f5f8f6;
+      line-height: 1.6;
+    }
+    :root {
+      --green-deep: #1a3a2e;
+      --green: #2d6a4f;
+      --green-light: #40916c;
+      --green-pale: #95d5b2;
+      --gold: #c9a96e;
+      --cream: #fdf8f0;
+      --white: #fff;
+      --text-muted: #6b7c77;
+      --border: #d4e0d9;
+      --danger: #e74c3c;
+      --shadow-sm: 0 1px 3px rgba(26,58,46,0.06);
+      --shadow-md: 0 4px 20px rgba(26,58,46,0.08);
+      --radius-sm: 8px;
+      --radius-md: 16px;
+    }
+    .app { min-height: 100vh; display: flex; }
+
+    /* Sidebar */
+    .sidebar {
+      width: 260px;
+      background: var(--green-deep);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 100;
+    }
+    .sidebar-header {
+      padding: 24px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .sidebar-header .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+    .sidebar-header .logo-icon {
+      width: 34px;
+      height: 34px;
+      background: var(--gold);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+    .sidebar-nav {
+      flex: 1;
+      padding: 16px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .sidebar-nav a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      color: rgba(255,255,255,0.7);
+      font-weight: 500;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+    .sidebar-nav a:hover { background: rgba(255,255,255,0.08); color: white; }
+    .sidebar-nav a.active {
+      background: rgba(255,255,255,0.12);
+      color: white;
+      font-weight: 600;
+    }
+    .sidebar-nav a .icon { font-size: 1.1rem; width: 24px; text-align: center; }
+    .sidebar-nav a .badge {
+      margin-left: auto;
+      background: var(--green-pale);
+      color: var(--green-deep);
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 50px;
+      font-weight: 600;
+    }
+    .sidebar-footer {
+      padding: 16px 20px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.4);
+    }
+
+    /* Main */
+    .main {
+      margin-left: 260px;
+      flex: 1;
+      padding: 32px 40px;
+      max-width: 1200px;
+    }
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .page-header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      color: var(--green-deep);
+    }
+    .page-header .sub {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-top: 4px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 0.88rem;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+    .btn-primary { background: var(--green); color: white; }
+    .btn-primary:hover { background: var(--green-light); }
+    .btn-secondary { background: var(--white); color: var(--green-deep); border: 1px solid var(--border); }
+    .btn-secondary:hover { border-color: var(--green); }
+    .btn-danger { background: var(--danger); color: white; }
+    .btn-danger:hover { background: #c0392b; }
+    .btn-sm { padding: 6px 14px; font-size: 0.8rem; }
+
+    /* Cards */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .stat-card {
+      background: var(--white);
+      border-radius: var(--radius-md);
+      padding: 20px 24px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border);
+    }
+    .stat-card .label {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+    .stat-card .value {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--green-deep);
+    }
+    .stat-card .value .unit { font-size: 0.9rem; color: var(--text-muted; font-weight: 400); }
+
+    .section-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--green-deep);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-title .count {
+      font-weight: 400;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    .card-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .item-card {
+      background: var(--white);
+      border-radius: var(--radius-sm);
+      padding: 20px 24px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      transition: border-color 0.2s;
+    }
+    .item-card:hover { border-color: var(--green-pale); }
+    .item-info { flex: 1; min-width: 0; }
+    .item-info .item-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--green-deep);
+      margin-bottom: 4px;
+    }
+    .item-info .item-meta {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .item-info .item-meta span {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .item-actions {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+      flex-wrap: wrap;
+    }
+
+    /* Form */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--white);
+      border-radius: var(--radius-md);
+      padding: 32px;
+      width: 100%;
+      max-width: 640px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-md);
+      animation: slideUp 0.2s ease;
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    .modal-header h2 {
+      font-size: 1.3rem;
+      color: var(--green-deep);
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text-muted);
+      padding: 4px;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      font-weight: 500;
+      font-size: 0.88rem;
+      color: var(--green-deep);
+      margin-bottom: 6px;
+    }
+    .form-group label .required { color: var(--danger); }
+    .form-group input, .form-group textarea, .form-group select {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 0.9rem;
+      color: var(--text);
+      background: var(--white);
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+      outline: none;
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(45,106,79,0.1);
+    }
+    .form-group textarea { resize: vertical; min-height: 80px; }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .form-hint {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+    .checkbox-group input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--green);
+      cursor: pointer;
+    }
+    .form-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+    .toast {
+      position: fixed;
+      bottom: 32px;
+      right: 32px;
+      background: var(--green-deep);
+      color: white;
+      padding: 14px 24px;
+      border-radius: var(--radius-sm);
+      font-weight: 500;
+      font-size: 0.9rem;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s;
+      z-index: 300;
+      pointer-events: none;
+      box-shadow: var(--shadow-md);
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast.error { background: var(--danger); }
+
+    /* Settings page */
+    .settings-card {
+      background: var(--white);
+      border-radius: var(--radius-md);
+      padding: 32px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border);
+      max-width: 700px;
+    }
+    .settings-card .form-group { margin-bottom: 24px; }
+    .settings-card .form-group label { display: block; font-weight: 500; margin-bottom: 6px; }
+    .settings-card .form-group input, .settings-card .form-group textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 0.9rem;
+    }
+    .settings-card .form-group textarea { resize: vertical; }
+    .settings-card h3 { font-size: 1.1rem; color: var(--green-deep); margin-bottom: 20px; }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 48px 24px;
+      color: var(--text-muted);
+    }
+    .empty-state .icon { font-size: 3rem; margin-bottom: 16px; opacity: 0.5; }
+    .empty-state h3 { font-size: 1.1rem; color: var(--green-deep); margin-bottom: 8px; }
+    .empty-state p { font-size: 0.9rem; }
+
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main { margin-left: 0; padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="app">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <span class="logo-icon">💧</span>
+        Nature Drips
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="#" data-page="dashboard" class="active">
+        <span class="icon">📊</span> Dashboard
+      </a>
+      <a href="#" data-page="services">
+        <span class="icon">💉</span> Services
+        <span class="badge" id="serviceCount">0</span>
+      </a>
+      <a href="#" data-page="testimonials">
+        <span class="icon">💬</span> Testimonials
+        <span class="badge" id="testimonialCount">0</span>
+      </a>
+      <a href="#" data-page="faqs">
+        <span class="icon">❓</span> FAQs
+        <span class="badge" id="faqCount">0</span>
+      </a>
+      <a href="#" data-page="settings">
+        <span class="icon">⚙️</span> Site Settings
+      </a>
+      <a href="#" data-page="export">
+        <span class="icon">📤</span> Export / Import
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      Nature Drips Admin v1.0<br>
+      <span id="lastUpdated">—</span>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main">
+    <!-- Dashboard -->
+    <div id="page-dashboard" class="page">
+      <div class="page-header">
+        <div>
+          <h1>Dashboard</h1>
+          <div class="sub">Overview of your Nature Drips content</div>
+        </div>
+        <button class="btn btn-secondary" onclick="navigate('services')">Manage Services</button>
+      </div>
+      <div class="stats-row" id="statsRow"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+        <div class="section-title">Recent Services <span class="count" id="recentServicesCount"></span></div>
+        <div class="section-title">Recent Testimonials <span class="count" id="recentTestimonialsCount"></span></div>
+      </div>
+      <div class="card-list" id="recentServices"></div>
+      <div class="card-list" id="recentTestimonials"></div>
+    </div>
+
+    <!-- Services -->
+    <div id="page-services" class="page" style="display:none">
+      <div class="page-header">
+        <div>
+          <h1>Services / Menu</h1>
+          <div class="sub">Manage your IV drip treatments and vitamin shots</div>
+        </div>
+        <button class="btn btn-primary" onclick="openServiceModal()">+ Add Service</button>
+      </div>
+      <div class="section-title">All Treatments <span class="count" id="allServicesCount"></span></div>
+      <div class="card-list" id="servicesList"></div>
+    </div>
+
+    <!-- Testimonials -->
+    <div id="page-testimonials" class="page" style="display:none">
+      <div class="page-header">
+        <div>
+          <h1>Testimonials</h1>
+          <div class="sub">Client reviews and stories</div>
+        </div>
+        <button class="btn btn-primary" onclick="openTestimonialModal()">+ Add Testimonial</button>
+      </div>
+      <div class="section-title">Client Reviews <span class="count" id="allTestimonialsCount"></span></div>
+      <div class="card-list" id="testimonialsList"></div>
+    </div>
+
+    <!-- FAQs -->
+    <div id="page-faqs" class="page" style="display:none">
+      <div class="page-header">
+        <div>
+          <h1>Frequently Asked Questions</h1>
+          <div class="sub">Manage your FAQ content</div>
+        </div>
+        <button class="btn btn-primary" onclick="openFaqModal()">+ Add FAQ</button>
+      </div>
+      <div class="section-title">All Questions <span class="count" id="allFaqsCount"></span></div>
+      <div class="card-list" id="faqsList"></div>
+    </div>
+
+    <!-- Settings -->
+    <div id="page-settings" class="page" style="display:none">
+      <div class="page-header">
+        <div>
+          <h1>Site Settings</h1>
+          <div class="sub">Edit your website's text content, contact info, and hero section</div>
+        </div>
+        <button class="btn btn-primary" onclick="saveSettings()">Save Changes</button>
+      </div>
+      <div class="settings-card" id="settingsForm"></div>
+    </div>
+
+    <!-- Export/Import -->
+    <div id="page-export" class="page" style="display:none">
+      <div class="page-header">
+        <div>
+          <h1>Export / Import Data</h1>
+          <div class="sub">Backup your data or import from a previous export</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:16px;flex-wrap:wrap">
+        <button class="btn btn-primary" onclick="exportData()">📥 Export All Data (JSON)</button>
+        <button class="btn btn-secondary" onclick="document.getElementById('importInput').click()">📤 Import Data</button>
+        <input type="file" id="importInput" accept=".json" style="display:none" onchange="importData(event)">
+      </div>
+      <div style="margin-top:24px">
+        <div class="section-title">Quick Export Links</div>
+        <div class="card-list">
+          <div class="item-card">
+            <div class="item-info">
+              <div class="item-title">Download Full Backup</div>
+              <div class="item-meta">Complete JSON with services, testimonials, FAQs, and settings</div>
+            </div>
+            <button class="btn btn-sm btn-secondary" onclick="exportData()">Download</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Service Modal -->
+<div class="modal-overlay" id="serviceModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="serviceModalTitle">Add Service</h2>
+      <button class="modal-close" onclick="closeModal('serviceModal')">✕</button>
+    </div>
+    <form id="serviceForm" onsubmit="saveService(event)">
+      <input type="hidden" id="serviceId">
+      <div class="form-group">
+        <label>Title <span class="required">*</span></label>
+        <input type="text" id="serviceTitle" placeholder="e.g. Beauty Glow Drip" required>
+      </div>
+      <div class="form-group">
+        <label>Category <span class="required">*</span></label>
+        <select id="serviceCategory" required>
+          <option value="">Select category...</option>
+          <option value="hydration">Hydration & Electrolytes</option>
+          <option value="immunity">Immunity Boosters</option>
+          <option value="beauty">Beauty & Glow</option>
+          <option value="energy">Energy & Performance</option>
+          <option value="detox">Detox & Cleanse</option>
+          <option value="shots">Vitamin Shots (IM)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea id="serviceDesc" placeholder="What does this treatment do?"></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Price (PKR)</label>
+          <input type="number" id="servicePrice" placeholder="0" min="0">
+        </div>
+        <div class="form-group">
+          <label>Duration</label>
+          <input type="text" id="serviceDuration" placeholder="e.g. 45 min">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Icon (emoji)</label>
+        <input type="text" id="serviceIcon" placeholder="💧" maxlength="4">
+        <div class="form-hint">A single emoji to represent this service</div>
+      </div>
+      <div class="form-group">
+        <label>Ingredients (comma-separated)</label>
+        <input type="text" id="serviceIngredients" placeholder="Glutathione, Vitamin C, Zinc">
+        <div class="form-hint">e.g. Glutathione, Vitamin C, Zinc, Biotin</div>
+      </div>
+      <div class="form-group">
+        <label class="checkbox-group">
+          <input type="checkbox" id="serviceFeatured">
+          Featured / highlight this service
+        </label>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('serviceModal')">Cancel</button>
+        <button type="submit" class="btn btn-primary" id="serviceSubmitBtn">Save Service</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Testimonial Modal -->
+<div class="modal-overlay" id="testimonialModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="testimonialModalTitle">Add Testimonial</h2>
+      <button class="modal-close" onclick="closeModal('testimonialModal')">✕</button>
+    </div>
+    <form id="testimonialForm" onsubmit="saveTestimonial(event)">
+      <input type="hidden" id="testimonialId">
+      <div class="form-group">
+        <label>Name <span class="required">*</span></label>
+        <input type="text" id="testimonialName" placeholder="e.g. Ayesha Khan" required>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Role / Location</label>
+          <input type="text" id="testimonialRole" placeholder="e.g. Karachi · Frequent Traveler">
+        </div>
+        <div class="form-group">
+          <label>Rating (1-5)</label>
+          <input type="number" id="testimonialRating" placeholder="5" min="1" max="5" value="5">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Review Text <span class="required">*</span></label>
+        <textarea id="testimonialText" placeholder="What did they say about their experience?" required></textarea>
+      </div>
+      <div class="form-group">
+        <label>Initials (auto-generated if empty)</label>
+        <input type="text" id="testimonialInitials" placeholder="AK" maxlength="4">
+      </div>
+      <div class="form-group">
+        <label class="checkbox-group">
+          <input type="checkbox" id="testimonialApproved" checked>
+          Approved (show on website)
+        </label>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('testimonialModal')">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save Testimonial</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- FAQ Modal -->
+<div class="modal-overlay" id="faqModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="faqModalTitle">Add FAQ</h2>
+      <button class="modal-close" onclick="closeModal('faqModal')">✕</button>
+    </div>
+    <form id="faqForm" onsubmit="saveFaq(event)">
+      <input type="hidden" id="faqId">
+      <div class="form-group">
+        <label>Question <span class="required">*</span></label>
+        <input type="text" id="faqQuestion" placeholder="e.g. Is IV drip therapy safe?" required>
+      </div>
+      <div class="form-group">
+        <label>Answer <span class="required">*</span></label>
+        <textarea id="faqAnswer" placeholder="Provide a clear, helpful answer..." required></textarea>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('faqModal')">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save FAQ</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ==================== API ====================
+  const API = '/api';
+
+  async function apiGet(endpoint) {
+    const res = await fetch(`${API}${endpoint}`);
+    if (!res.ok) throw new Error(`API error: ${res.status}`);
+    return res.json();
+  }
+
+  async function apiPost(endpoint, data) {
+    const res = await fetch(`${API}${endpoint}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) throw new Error(`API error: ${res.status} — ${await res.text()}`);
+    return res.json();
+  }
+
+  async function apiPut(endpoint, data) {
+    const res = await fetch(`${API}${endpoint}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) throw new Error(`API error: ${res.status} — ${await res.text()}`);
+    return res.json();
+  }
+
+  async function apiDelete(endpoint) {
+    const res = await fetch(`${API}${endpoint}`, { method: 'DELETE' });
+    if (!res.ok) throw new Error(`API error: ${res.status}`);
+    return res.json();
+  }
+
+  // ==================== NAVIGATION ====================
+  function navigate(page) {
+    document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+    document.querySelector(`.sidebar-nav a[data-page="${page}"]`).classList.add('active');
+    document.querySelectorAll('.main .page').forEach(p => p.style.display = 'none');
+    document.getElementById(`page-${page}`).style.display = '';
+    loadPage(page);
+  }
+
+  async function loadPage(page) {
+    try {
+      switch (page) {
+        case 'dashboard': await loadDashboard(); break;
+        case 'services': await loadServices(); break;
+        case 'testimonials': await loadTestimonials(); break;
+        case 'faqs': await loadFaqs(); break;
+        case 'settings': await loadSettings(); break;
+        case 'export': /* static */ break;
+      }
+      // Update sidebar counts
+      const [stats, services, testimonials, faqs] = await Promise.all([
+        apiGet('/stats'),
+        apiGet('/services'),
+        apiGet('/testimonials'),
+        apiGet('/faqs')
+      ]);
+      document.getElementById('serviceCount').textContent = stats.totalServices;
+      document.getElementById('testimonialCount').textContent = stats.approvedTestimonials;
+      document.getElementById('faqCount').textContent = stats.totalFaqs;
+      document.getElementById('lastUpdated').textContent = new Date(stats.lastUpdated).toLocaleString();
+    } catch (e) {
+      showToast('Error loading data: ' + e.message, true);
+    }
+  }
+
+  // ==================== TOAST ====================
+  function showToast(msg, isError = false) {
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.className = 'toast show' + (isError ? ' error' : '');
+    clearTimeout(toast._timer);
+    toast._timer = setTimeout(() => toast.classList.remove('show'), 3000);
+  }
+
+  // ==================== MODALS ====================
+  function closeModal(id) {
+    document.getElementById(id).classList.remove('open');
+  }
+
+  function openServiceModal(service = null) {
+    document.getElementById('serviceModalTitle').textContent = service ? 'Edit Service' : 'Add Service';
+    document.getElementById('serviceId').value = service ? service.id : '';
+    document.getElementById('serviceTitle').value = service ? service.title : '';
+    document.getElementById('serviceCategory').value = service ? service.category : '';
+    document.getElementById('serviceDesc').value = service ? service.description : '';
+    document.getElementById('servicePrice').value = service ? service.price : '';
+    document.getElementById('serviceDuration').value = service ? service.duration : '';
+    document.getElementById('serviceIcon').value = service ? service.icon : '💧';
+    document.getElementById('serviceIngredients').value = service ? (service.ingredients || []).join(', ') : '';
+    document.getElementById('serviceFeatured').checked = service ? service.featured : false;
+    document.getElementById('serviceModal').classList.add('open');
+  }
+
+  function openTestimonialModal(testimonial = null) {
+    document.getElementById('testimonialModalTitle').textContent = testimonial ? 'Edit Testimonial' : 'Add Testimonial';
+    document.getElementById('testimonialId').value = testimonial ? testimonial.id : '';
+    document.getElementById('testimonialName').value = testimonial ? testimonial.name : '';
+    document.getElementById('testimonialRole').value = testimonial ? testimonial.role : '';
+    document.getElementById('testimonialRating').value = testimonial ? testimonial.rating : 5;
+    document.getElementById('testimonialText').value = testimonial ? testimonial.text : '';
+    document.getElementById('testimonialInitials').value = testimonial ? testimonial.initials : '';
+    document.getElementById('testimonialApproved').checked = testimonial ? testimonial.approved : true;
+    document.getElementById('testimonialModal').classList.add('open');
+  }
+
+  function openFaqModal(faq = null) {
+    document.getElementById('faqModalTitle').textContent = faq ? 'Edit FAQ' : 'Add FAQ';
+    document.getElementById('faqId').value = faq ? faq.id : '';
+    document.getElementById('faqQuestion').value = faq ? faq.question : '';
+    document.getElementById('faqAnswer').value = faq ? faq.answer : '';
+    document.getElementById('faqModal').classList.add('open');
+  }
+
+  // ==================== SERVICES ====================
+  async function loadServices() {
+    try {
+      const services = await apiGet('/services');
+      document.getElementById('allServicesCount').textContent = `(${services.length})`;
+      const list = document.getElementById('servicesList');
+      if (!services.length) {
+        list.innerHTML = `<div class="empty-state"><div class="icon">💉</div><h3>No services yet</h3><p>Add your first IV drip treatment to get started.</p></div>`;
+        return;
+      }
+      list.innerHTML = services.map(s => `
+        <div class="item-card">
+          <div class="item-info">
+            <div class="item-title">${s.icon || '💧'} ${escapeHtml(s.title)}</div>
+            <div class="item-meta">
+              <span>📂 ${s.category}</span>
+              <span>₨ ${s.price.toLocaleString()}</span>
+              <span>⏱ ${s.duration}</span>
+              ${s.featured ? '<span style="color:var(--gold)">⭐ Featured</span>' : ''}
+            </div>
+          </div>
+          <div class="item-actions">
+            <button class="btn btn-sm btn-secondary" onclick="openServiceModal(${JSON.stringify(s).replace(/"/g, '&quot;')})">Edit</button>
+            <button class="btn btn-sm btn-danger" onclick="deleteService('${s.id}')">Delete</button>
+          </div>
+        </div>
+      `).join('');
+    } catch (e) {
+      showToast('Error: ' + e.message, true);
+    }
+  }
+
+  async function saveService(e) {
+    e.preventDefault();
+    const id = document.getElementById('serviceId').value;
+    const data = {
+      title: document.getElementById('serviceTitle').value,
+      category: document.getElementById('serviceCategory').value,
+      description: document.getElementById('serviceDesc').value,
+      price: parseInt(document.getElementById('servicePrice').value) || 0,
+      duration: document.getElementById('serviceDuration').value,
+      icon: document.getElementById('serviceIcon').value || '💧',
+      ingredients: document.getElementById('serviceIngredients').value.split(',').map(s => s.trim()).filter(Boolean),
+      featured: document.getElementById('serviceFeatured').checked
+    };
+    try {
+      if (id) {
+        await apiPut(`/services/${id}`, data);
+        showToast('Service updated!');
+      } else {
+        await apiPost('/services', data);
+        showToast('Service added!');
+      }
+      closeModal('serviceModal');
+      await loadServices();
+      await loadDashboard();
+    } catch (e) {
+      showToast('Error: ' + e.message, true);
+    }
+  }
+
+  async function deleteService(id) {
+    if (!confirm('Delete this service? This cannot be undone.')) return;
+    try {
+      await apiDelete(`/services/${id}`);
+      showToast('Service deleted');
+      await loadServices();
+      await loadDashboard();
+    } catch (e) {
+      showToast('Error: ' + e.message, true);
+    }
+  }
+
+  // ==================== TESTIMONIALS ====================
+  async function loadTestimonials() {
+    try {
+      const testimonials = await apiGet('/testimonials');
+      document.getElementById('allTestimonialsCount').textContent = `(${testimonials.length})`;
+      const list = document.getElementById('testimonialsList');
+      if (!testimonials.length) {
+        list.innerHTML = `<div class="empty-state"><div class="icon">💬</div><h3>No testimonials yet</h3><p>Add client reviews to build trust.</p></div>`;
+        return;
+      }
+      list.innerHTML = testimonials.map(t => `
+        <div class="item-card">
+          <div class="item-info">
+            <div class="item-title">"${escapeHtml(t.text.slice(0, 80))}${t.text.length > 80 ? '...' : ''}"</div>
+            <div class="item-meta">
+              <span>👤 ${escapeHtml(t.name)}</span>
+              <span>⭐ ${'★'.repeat(t.rating)}${'☆'.repeat(5-t.rating)}</span>
+              ${t.role ? `<span>📍 ${escapeHtml(t.role)}</span>` : ''}
+              ${t.approved ? '<span style="color:var(--green-light)">✅ Published</span>' : '<span style="color:var(--text-muted)">⏳ Pending</span>'}
+            </div>
+          </div>
+          <div class="item-actions">
+            <button class="btn btn-sm btn-secondary" onclick="openTestimonialModal(${JSON.stringify(t).replace(/"/g, '&quot;')})">Edit</button>
+            <button class="btn btn-sm btn-danger" onclick="deleteTestimonial('${t.id}')">Delete</button>
+          </div>
+        </div>
+      `).join('');
+    } catch (e) {
+      showToast('Error: ' + e.message, true);
+    }
+  }
+
+  async function saveTestimonial(e) {
+    e.preventDefault();
+    const id = document.getElementById('testimonialId').value;
+    const data = {
+      name: document.getElementById('testimonialName').value,
+      role: document.getElementById('testimonialRole').value,
+      text: document.getElementById('testimonialText').value,
+      rating: parseInt(document.getElementById('testimonialRating').value) || 5,
+      initials: document.getElementById('testimonialInitials').value,
+      approved: document.getElementById('testimonialApproved').checked
+    };
+    try {
+      if (id) {
+        await apiPut(`/testimonials/${id}`, data);
+        showToast('Testimonial updated!');
+      } else {
+        await apiPost('/testimonials', data);
+        showToast('Testimonial added!');
+      }
+      closeModal('testimonialModal');
+      await loadTestimonials();
+      await loadDashboard();
+    } catch (e) {
+      showToast('Error: ' + e.message, true);
+    }
+  }
+
+  async function deleteTestimonial(id) {
+    if (!confirm('Delete this testimonial?')) return;
+    try {
+      await apiDelete(`/testimonials/${id}`);
+      showToast('Testimonial deleted');
+      await loadTestimonials();
+      await loadDashboard();
+    } catch (e) {
+      showToast('Error: ' + e.message, true);
+    }
+  }
+
+  // ==================== FAQ ====================
+  async function loadFaqs() {
+    try {
+      const faqs = await apiGet('/faqs');
+      document.getElementById('allFaqsCount').textContent = `(${faqs.length})`;
+      const list = document.getElementById('faqsList');
+      if (!faqs.length) {
+        list.innerHTML = `<div class="empty-state"><div class="icon">❓</div><h3>No FAQs yet</h3><p>Add questions your clients often ask.</p></div>`;
+        return;
+      }
+      list.innerHTML = faqs.map(f => `
+        <div class="item-card">
+          <div class="item-info">
+            <div class="item-title">${escapeHtml(f.question)}</div>
+            <div class="item-meta">
+              <span style="color:var(--text-muted)">${escapeHtml(f.answer.slice(0, 100))}...</span>
+            </div>
+          </div>
+          <div class="item-actions">
+            <button class="btn btn-sm btn-secondary" onclick="openFaqModal(${JSON.stringify(f).replace(/"/g, '&quot;')})">Edit</button>
+            <button class="btn btn-sm btn-danger" onclick="deleteFaq('${f.id}')">Delete</button>
+          </div>
+        </div>
+      `).join('');
+    } catch (e) {
+      showToast('Error: ' + e.message, true);
+    }
+  }
+
+  async function saveFaq(e) {
+    e.preventDefault();
+    const id = document.getElementById('faqId').value;
+    const data = {
+      question: document.getElementById('faqQuestion').value,
+      answer: document.getElementById('faqAnswer').value
+    };
+    try {
+      if (id) {
+        await apiPut(`/faqs/${id}`, data);
+        showToast('FAQ updated!');
+      } else {
+        await apiPost('/faqs', data);
+        showToast('FAQ added!');
+      }
+      closeModal('faqModal');
+      await loadFaqs();
+      await loadDashboard();
+    } catch (e) {
+      showToast('Error: ' + e.message, true);
+    }
+  }
+
+  async function deleteFaq(id) {
+    if (!confirm('Delete this FAQ?')) return;
+    try {
+      await apiDelete(`/faqs/${id}`);
+      showToast('FAQ deleted');
+      await loadFaqs();
+      await loadDashboard();
+    } catch (e) {
+      showToast('Error: ' + e.message, true);
+    }
+  }
+
+  // ==================== SETTINGS ====================
+  async function loadSettings() {
+    try {
+      const settings = await apiGet('/settings');
+      const form = document.getElementById('settingsForm');
+      form.innerHTML = `
+        <h3>🌐 Website Branding</h3>
+        <div class="form-group">
+          <label>Site Title</label>
+          <input type="text" id="settings_siteTitle" value="${escapeHtml(settings.siteTitle)}">
+        </div>
+        <div class="form-group">
+          <label>Site Description (SEO meta)</label>
+          <textarea id="settings_siteDescription" rows="3">${escapeHtml(settings.siteDescription)}</textarea>
+        </div>
+        <h3 style="margin-top:24px">📞 Contact Information</h3>
+        <div class="form-group">
+          <label>Phone</label>
+          <input type="text" id="settings_phone" value="${escapeHtml(settings.phone)}">
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="text" id="settings_email" value="${escapeHtml(settings.email)}">
+        </div>
+        <div class="form-group">
+          <label>Locations</label>
+          <input type="text" id="settings_locations" value="${escapeHtml(settings.locations)}">
+        </div>
+        <h3 style="margin-top:24px">🏠 Hero Section</h3>
+        <div class="form-group">
+          <label>Hero Badge Text</label>
+          <input type="text" id="settings_heroBadge" value="${escapeHtml(settings.heroBadge)}">
+        </div>
+        <div class="form-group">
+          <label>Hero Title</label>
+          <input type="text" id="settings_heroTitle" value="${escapeHtml(settings.heroTitle)}">
+        </div>
+        <div class="form-group">
+          <label>Hero Subtitle</label>
+          <textarea id="settings_heroSubtitle" rows="3">${escapeHtml(settings.heroSubtitle)}</textarea>
+        </div>
+        <h3 style="margin-top:24px">📖 About Section</h3>
+        <div class="form-group">
+          <label>About Title</label>
+          <input type="text" id="settings_aboutTitle" value="${escapeHtml(settings.aboutTitle)}">
+        </div>
+        <div class="form-group">
+          <label>About Text (paragraph 1)</label>
+          <textarea id="settings_aboutText" rows="3">${escapeHtml(settings.aboutText)}</textarea>
+        </div>
+        <div class="form-group">
+          <label>About Text (paragraph 2)</label>
+          <textarea id="settings_aboutText2" rows="3">${escapeHtml(settings.aboutText2)}</textarea>
+        </div>
+        <h3 style="margin-top:24px">📣 CTA Section</h3>
+        <div class="form-group">
+          <label>CTA Title</label>
+          <input type="text" id="settings_ctaTitle" value="${escapeHtml(settings.ctaTitle)}">
+        </div>
+        <div class="form-group">
+          <label>CTA Text</label>
+          <textarea id="settings_ctaText" rows="3">${escapeHtml(settings.ctaText)}</textarea>
+        </div>
+        <div class="form-actions" style="margin-top:32px">
+          <button class="btn btn-primary" onclick="saveSettings()">Save All Settings</button>
+        </div>
+      `;
+    } catch (e) {
+      showToast('Error: ' + e.message, true);
+    }
+  }
+
+  async function saveSettings() {
+    const data = {
+      siteTitle: document.getElementById('settings_siteTitle').value,
+      siteDescription: document.getElementById('settings_siteDescription').value,
+      phone: document.getElementById('settings_phone').value,
+      email: document.getElementById('settings_email').value,
+      locations: document.getElementById('settings_locations').value,
+      heroBadge: document.getElementById('settings_heroBadge').value,
+      heroTitle: document.getElementById('settings_heroTitle').value,
+      heroSubtitle: document.getElementById('settings_heroSubtitle').value,
+      aboutTitle: document.getElementById('settings_aboutTitle').value,
+      aboutText: document.getElementById('settings_aboutText').value,
+      aboutText2: document.getElementById('settings_aboutText2').value,
+      ctaTitle: document.getElementById('settings_ctaTitle').value,
+      ctaText: document.getElementById('settings_ctaText').value
+    };
+    try {
+      await apiPut('/settings', data);
+      showToast('Settings saved!');
+      document.getElementById('lastUpdated').textContent = new Date().toLocaleString();
+    } catch (e) {
+      showToast('Error: ' + e.message, true);
+    }
+  }
+
+  // ==================== EXPORT / IMPORT ====================
+  async function exportData() {
+    try {
+      const data = await apiGet('/export');
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `nature-drips-backup-${new Date().toISOString().slice(0,10)}.json`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+      showToast('Backup downloaded!');
+    } catch (e) {
+      showToast('Error: ' + e.message, true);
+    }
+  }
+
+  async function importData(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      try {
+        const data = JSON.parse(e.target.result);
+        await apiPost('/import', data);
+        showToast('Data imported successfully! Reloading...');
+        setTimeout(() => { window.location.reload(); }, 1500);
+      } catch (err) {
+        showToast('Import failed: ' + err.message, true);
+      }
+    };
+    reader.readAsText(file);
+    event.target.value = '';
+  }
+
+  // ==================== DASHBOARD ====================
+  async function loadDashboard() {
+    try {
+      const [stats, services, testimonials] = await Promise.all([
+        apiGet('/stats'),
+        apiGet('/services'),
+        apiGet('/testimonials')
+      ]);
+
+      document.getElementById('statsRow').innerHTML = `
+        <div class="stat-card">
+          <div class="label">Total Services</div>
+          <div class="value">${stats.totalServices}</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Testimonials</div>
+          <div class="value">${stats.approvedTestimonials} <span class="unit">/ ${stats.totalTestimonials}</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="label">FAQs</div>
+          <div class="value">${stats.totalFaqs}</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Categories</div>
+          <div class="value">${stats.categories.length}</div>
+        </div>
+      `;
+
+      const recentServices = services.slice(0, 5);
+      document.getElementById('recentServicesCount').textContent = `(${recentServices.length}/${services.length})`;
+      document.getElementById('recentServices').innerHTML = recentServices.length
+        ? recentServices.map(s => `
+            <div class="item-card" style="cursor:pointer" onclick="navigate('services');openServiceModal(${JSON.stringify(s).replace(/"/g, '&quot;')})">
+              <div class="item-info">
+                <div class="item-title">${s.icon || '💧'} ${escapeHtml(s.title)}</div>
+                <div class="item-meta">
+                  <span>📂 ${s.category}</span>
+                  <span>₨ ${s.price.toLocaleString()}</span>
+                  ${s.featured ? '<span style="color:var(--gold)">⭐</span>' : ''}
+                </div>
+              </div>
+            </div>
+          `).join('')
+        : '<div class="empty-state" style="padding:16px"><p>No services yet</p></div>';
+
+      const recentTestimonials = testimonials.slice(0, 4);
+      document.getElementById('recentTestimonialsCount').textContent = `(${recentTestimonials.length}/${testimonials.length})`;
+      document.getElementById('recentTestimonials').innerHTML = recentTestimonials.length
+        ? recentTestimonials.map(t => `
+            <div class="item-card">
+              <div class="item-info">
+                <div class="item-title">"${escapeHtml(t.text.slice(0, 100))}${t.text.length > 100 ? '...' : ''}"</div>
+                <div class="item-meta">
+                  <span>👤 ${escapeHtml(t.name)}</span>
+                  <span>⭐ ${t.rating}/5</span>
+                  ${t.role ? `<span>📍 ${escapeHtml(t.role)}</span>` : ''}
+                </div>
+              </div>
+            </div>
+          `).join('')
+        : '<div class="empty-state" style="padding:16px"><p>No testimonials yet</p></div>';
+    } catch (e) {
+      showToast('Error: ' + e.message, true);
+    }
+  }
+
+  // ==================== UTILS ====================
+  function escapeHtml(str) {
+    if (typeof str !== 'string') return '';
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+  }
+
+  // ==================== SIDEBAR CLICKS ====================
+  document.querySelectorAll('.sidebar-nav a').forEach(a => {
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
+      navigate(a.dataset.page);
+    });
+  });
+
+  // Close modals on overlay click
+  document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) closeModal(overlay.id);
+    });
+  });
+
+  // ==================== INIT ====================
+  loadDashboard();
+</script>
+</body>
+</html>
