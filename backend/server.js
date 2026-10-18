@@ -12,6 +12,12 @@ app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.static(path.join(__dirname, '../')));
 
+// Voice agent for the physical robot desk (state machine + NLU + queue + SMS)
+const voiceRouter = require('./voice/voice.js');
+const VOICE_AUDIO_DIR = path.join(__dirname, 'data', 'voice', 'audio');
+app.use('/voice', voiceRouter);
+app.use('/voice/audio', express.static(VOICE_AUDIO_DIR));
+
 // Ensure data directory
 const DATA_DIR = path.join(__dirname, 'data');
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });

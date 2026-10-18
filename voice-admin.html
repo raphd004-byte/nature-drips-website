@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Voice Desk — Nature Drips</title>
+<style>
+  :root{
+    --green-deep:#1a3a2e; --green:#2d6a4f; --green-light:#40916c;
+    --green-pale:#95d5b2; --gold:#c9a96e; --text:#1a2e2a; --muted:#6b7c77;
+    --border:#d4e0d9; --card:#fafdfb; --on-hold:#8a6d00; --danger:#b3261e;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:'Inter',system-ui,sans-serif; color:var(--text); background:var(--card); line-height:1.6;}
+  header{
+    background:var(--green-deep); color:#fff; padding:16px 24px;
+    display:flex; align-items:center; gap:12px; position:sticky; top:0; z-index:50;
+  }
+  header .logo{display:flex; align-items:center; gap:10px; font-size:1.2rem; font-weight:700;}
+  header .logo svg{width:34px;height:34px;}
+  nav{display:flex; gap:18px; margin-left:24px; font-size:0.9rem;}
+  nav a{color:#cdd9d3; text-decoration:none; padding:6px 2px; border-bottom:2px solid transparent; transition:.2s;}
+  nav a:hover{color:#fff; border-color:var(--green-pale);}
+  .wrap{max-width:1100px; margin:0 auto; padding:24px; display:flex; flex-direction:column; gap:20px;}
+  h1{font-size:1.5rem; margin-bottom:4px;}
+  .sub{color:var(--muted); font-size:0.9rem;}
+  .card{background:var(--card); border:1px solid var(--border); border-radius:12px; padding:20px;}
+  .panel-grid{display:grid; grid-template-columns:1fr 360px; gap:20px;}
+  @media (max-width:860px){ .panel-grid{grid-template-columns:1fr;} }
+  .status-badge{display:inline-flex; align-items:center; gap:8px; padding:6px 14px; border-radius:999px; font-size:0.82rem; font-weight:600;}
+  .badge-list{display:flex; flex-wrap:wrap; gap:8px;}
+  .call-item{border:1px solid var(--border); border-radius:10px; padding:14px; cursor:pointer; transition:.2s;}
+  .call-item:hover{border-color:var(--green);}
+  .call-item .top{display:flex; justify-content:space-between; align-items:center; gap:10px;}
+  .call-item .id{font-family:'SF Mono',monospace; font-size:0.78rem; color:var(--muted);}
+  .call-item .body{display:flex; flex-direction:column; gap:6px; margin-top:8px;}
+  .call-item .lbl{font-size:0.75rem; color:var(--muted);}
+  .call-item .val{font-size:0.95rem; font-weight:500;}
+  .call-item .intent{display:inline-block; padding:2px 8px; border-radius:5px; font-size:0.75rem; font-weight:600;}
+  .intent-sales{background:rgba(45,106,79,0.12); color:var(--green);}
+  .intent-urgent{background:rgba(179,38,30,0.12); color:var(--danger);}
+  .intent-hold{background:rgba(138,109,0,0.16); color:var(--on-hold);}
+  .intent-general{background:rgba(107,124,119,0.12); color:var(--muted);}
+  .log{border:1px solid var(--border); border-radius:8px; padding:10px; max-height:200px; overflow:auto; font-size:0.82rem; background:#f6faf8;}
+  .log div{padding:3px 0; border-bottom:1px solid #eef2f0; font-family:'SF Mono',monospace;}
+  .log .t{color:var(--muted);} .log .i{color:var(--green-light);} .log .h{color:var(--on-hold);}
+  .badge-ok{background:#d9f2e4; color:#1a7a4a; font-size:0.7rem; padding:2px 8px; border-radius:999px;}
+  .empty{color:var(--muted); text-align:center; padding:30px; font-size:0.9rem;}
+  .btn{background:var(--green); color:#fff; border:none; padding:10px 18px; border-radius:8px; font-weight:600; cursor:pointer; font-size:0.9rem;}
+  .btn:hover{background:var(--green-light);}
+  .btn-hold{background:var(--on-hold); color:#fff;}
+  .btn-hold:hover{background:#9c7b00;}
+  .modal{background:#fff; border:1px solid var(--border); border-radius:12px; padding:20px; max-width:640px; width:100%; box-shadow:0 12px 40px rgba(26,58,46,.18); display:none; position:relative;}
+  .modal.open{display:block;}
+  .modal h2{margin-bottom:8px;}
+  .modal .close{position:absolute; top:12px; right:14px; background:none; border:none; font-size:1.4rem; cursor:pointer; color:var(--muted);}
+  .modal pre{background:#f6faf8; padding:12px; border-radius:8px; font-size:0.8rem; overflow:auto; max-height:220px;}
+  .sms-box{display:none; align-items:center; gap:12px; margin-top:12px; flex-wrap:wrap;}
+  .sms-box.show{display:flex;}
+  .sms-box input{flex:1; padding:10px; border:1px solid var(--border); border-radius:8px; font-size:0.9rem;}
+  .sms-box button{background:var(--green); color:#fff; border:none; padding:10px 16px; border-radius:8px; cursor:pointer;}
+  footer{margin-top:24px; color:var(--muted); font-size:0.8rem; text-align:center;}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">💧 <span>Nature Drips — Desk Queue</span></div>
+  <nav>
+    <a href="/admin.html">Website Admin</a>
+    <a href="voice-admin.html" class="active">Voice Desk</a>
+  </nav>
+</header>
+<div class="wrap">
+  <h1>Call Queue <span class="sub" id="clock"></span></h1>
+  <div class="card">
+    <div class="badge-list" id="statusRow"></div>
+    <div class="panel-grid" id="root">
+      <div id="queueList"><div class="empty">Loading...</div></div>
+      <div class="card" id="detailCard">
+        <h2 id="detTitle">Select a call</h2>
+        <pre id="detPre" style="white-space:pre-wrap;"></pre>
+        <div class="sms-box" id="smsBox">
+          <input id="smsTo" placeholder="Expert / desk phone" />
+          <button onclick="sendSms()">Send alert</button>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;">
+          <button class="btn btn-hold" onclick="handoff('human')">Hand to desk</button>
+          <button class="btn" onclick="resolve()">Resolve</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal" id="modal">
+  <h2 id="modalTitle">Call detail</h2>
+  <pre id="modalPre" style="white-space:pre-wrap; max-height:320px;"></pre>
+  <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">
+    <button class="btn btn-hold" onclick="openHandoff()">Hand to desk</button>
+    <button class="btn" onclick="closeModal()">Close</button>
+  </div>
+</div>
+
+<script>
+const API = '/voice';
+let calls = [];
+
+function now(){ return new Date().toLocaleTimeString(); }
+function fmt(ns){ return (ns/1000).toFixed(1)+'s'; }
+
+function badge(status, cls){
+  const m = {created:'Waiting',ringing:'Ringing',listening:'Listening',transcribing:'Transcribing',
+             thinking:'Thinking',speaking:'Speaking',on_hold:'On-hold',on-hold:'On-hold',
+             completed:'Resolved',failed:'Failed'}[status] || status;
+  return `<span class="status-badge"><span class="badge-ok">●</span> ${m}</span>`;
+}
+
+function render(){
+  fetch(`${API}/queue`).then(r=>r.json()).then(d=>{
+    calls = d.calls || [];
+    const pend = d.pending || [];
+    const row = document.getElementById('statusRow');
+    row.innerHTML = `<span>total: <strong>${d.total||0}</strong></span>
+                      <span>pending: <strong>${d.pending||0}</strong></span>
+                      <span>holding: <strong>${d.byStatus && d.byStatus['on-hold']||0}</strong></span>`;
+    const list = document.getElementById('queueList');
+    if(!pend.length){ list.innerHTML='<div class="empty">No calls right now.</div>'; return; }
+    list.innerHTML = pend.map(c=>`
+      <div class="call-item" onclick="openModal('${c.id}', true)">
+        <div class="top"><span class="id">${esc(c.id)}</span>${badge(c.status)}</div>
+        <div class="body">
+          <div><span class="lbl">Caller</span><span class="val">${esc(c.phone||'—')} ${c.callerName?'· '+esc(c.callerName):''}</span></div>
+          <div><span class="lbl">Intent</span><span class="intent ${c.intent||''}">${esc(c.intent||'—')}</span></div>
+          <div><span class="lbl">Transcript</span><span class="val">${esc(c.transcript||'—').slice(0,90)}</span></div>
+          <div><span class="lbl">Handoff</span>${c.handoff?'<span class="badge-ok">Handoff · '+esc(c.handoff.reason||'')+'</span>':''}</div>
+        </div>
+      </div>`).join('');
+  }).catch(()=>{document.getElementById('queueList').innerHTML='<div class="empty">Queue unavailable</div>';});
+}
+
+function esc(s){ return (s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+async function openModal(id, fromQueue){
+  const r = await fetch(`${API}/calls/${id}`).then(x=>x.json());
+  const call = r.call || r;
+  CALL_ID = id;
+  document.getElementById('modalTitle').textContent = `Call ${esc(call.id)} · ${esc(call.status||'')}`;
+  let s = `<strong>Phone:</strong> ${esc(call.phone||'—')}\n<strong>Sid:</strong> ${esc(call.callSid||'')}
+<strong>Caller:</strong> ${esc(call.callerName||'')}
+<strong>Status:</strong> ${esc(call.status||'')}
+<strong>Intent:</strong> ${esc(call.intent||'')}
+<strong>Action:</strong> ${esc(call.action||'')}
+<strong>Transcript:</strong>
+${esc(call.transcript||'—')}
+${call.handoff?'<strong>Handoff:</strong> '+JSON.stringify(call.handoff):''}
+<strong>Audio files:</strong> ${call.audioCount||0}
+${call.audioFiles?'<pre>'+JSON.stringify(call.audioFiles,null,2)+'</pre>':''}
+<strong>Events:</strong>
+<pre>${JSON.stringify(call.events||[],null,2)}</pre>`;
+  document.getElementById('modalPre').innerHTML = s;
+  document.getElementById('modal').classList.add('open');
+  document.getElementById('smsBox').classList.add('show');
+}
+
+function openHandoff(){ closeModal(); }
+function handoff(reason){
+  if(!CALL_ID) return;
+  fetch(`${API}/calls/${CALL_ID}/handoff`,{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({reason: reason||'desk_handoff'})}).then(()=>{
+    alert('Handoff recorded. SMS alert sent if configured.');
+    setTimeout(()=>location.reload(),900);
+  });
+}
+function resolve(){
+  if(!CALL_ID) return;
+  fetch(`${API}/calls/${CALL_ID}/cancel`,{method:'POST'}).then(()=>{
+    alert('Call resolved.'); setTimeout(()=>location.reload(),900);
+  });
+}
+function sendSms(){
+  if(!CALL_ID) return;
+  // Reuse the middleware handoff → it queues + sends the SMS alert
+  fetch(`${API}/calls/${CALL_ID}/handoff`,{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({reason:'desk_alert'})}).then(()=>{
+    alert('Alert queued — an expert has been notified.');
+  }).catch(()=>alert('Could not send alert.'));
+}
+document.getElementById('smsBox').classList.remove('show');
+
+// auto-refresh
+setInterval(render, 5000);
+document.getElementById('clock').textContent = now();
+</script>
+</body>
+</html>

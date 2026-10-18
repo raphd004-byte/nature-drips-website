@@ -1,0 +1,8 @@
+# Nature Drips voice bot — robot "brain" dependencies
+# ASR / STT
+SpeechRecognition>=3.12
+pyaudio>=0.2.14          # or use sounddevice + numpy (see notes)
+# TTS
+edge-tts>=1.0.0
+# HTTP + helpers
+requests>=2.31

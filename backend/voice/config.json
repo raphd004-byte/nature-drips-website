@@ -1,0 +1,39 @@
+{
+  "port": 3000,
+  "voice": {
+    "audioDir": "backend/data/voice/audio",
+    "greeting": "Thank you for calling Nature Drips. Your call is very important to us. Please hold while I connect you.",
+    "holdMessage": "Thank you for your patience. An expert is on the way to attend to your call.",
+    "handoffMessage": "Due to the current volume of calls, an expert will attend to your call shortly. We appreciate your patience.",
+    "hangupMessage": "Thank you for calling Nature Drips. Have a great day.",
+    "handoffTimeoutSeconds": 300
+  },
+  "nlu": {
+    "type": "hybrid",
+    "rule": {
+      "enabled": true
+    },
+    "localLLM": null,
+    "cloudLLM": {
+      "enabled": false,
+      "provider": "openai",
+      "apiKeyEnv": "LLM_API_KEY",
+      "model": "gpt-4o-mini"
+    }
+  },
+  "sms": {
+    "provider": "webhook",
+    "webhookUrlEnv": "SMS_WEBHOOK_URL",
+    "twilio": {
+      "enabled": false,
+      "accountSidEnv": "TWILIO_ACCOUNT_SID",
+      "authTokenEnv": "TWILIO_AUTH_TOKEN",
+      "fromEnv": "TWILIO_FROM_NUMBER"
+    }
+  },
+  "office": {
+    "phone": "+92 300 1234567",
+    "email": "hello@thenaturedrip.pk",
+    "smsPhone": "+92 300 1234567"
+  }
+}
