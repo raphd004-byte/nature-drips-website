@@ -42,20 +42,46 @@ import speech_recognition as sr
 
 # ---------------------------------------------------------------- config
 
+def load_config():
+    """Read the voice/middleware & TTS config from backend/voice/config.json."""
+    try:
+        import json as _json
+        import os as _os
+        _path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'voice', 'config.json')
+        with open(_path, 'r') as _f:
+            return _json.load(_f)
+    except Exception:
+        return {}
+
+CONFIG = load_config()
+TTS_CONFIG = CONFIG.get('tts', {})
+VOICE = TTS_CONFIG.get('voice', 'en-US-AndrewNeural')
+RATE = TTS_CONFIG.get('rate', '+0%')
+HANDOFF_TIMEOUT = int((CONFIG.get('voice') or {}).get('handoffTimeoutSeconds', 300)) or 300
+
 MIDWARE_HOST = os.environ.get("MIDWARE_HOST", "http://localhost:3000")
 MIDWARE = lambda p: f"{MIDWARE_HOST}{p}"
-
 PHONE = None
 CALL_SID = None
 CALL_ID = None
 
 # ---------------------------------------------------------------- speech I/O
 
-def listen(phrase_time_limit=15):
-    """Record from the mic and return the recognised text (Google, no key)."""
+def listen(phrase_time_limit=15, energy_adjust=0.5):
+    """Record from the mic and return the recognised text (Google).
+       Uses dynamic energy threshold so the robot stays 'listening' between turns.
+    """
     r = sr.Recognizer()
     with sr.Microphone() as src:
-        r.adjust_for_ambient_noise(src, duration=0.6)
+        # Lower the ambient noise floor so the robot hears the caller
+        # more clearly during a live live call.
+        src._device = getattr(src, '_device', None)
+        try:
+            r.energy_threshold = 300
+            r.dynamic_energy_threshold = True
+            r.pause_threshold = 0.6
+        except Exception:
+            pass
         print("  [brain] Listening... speak now, then stop.")
         audio = r.listen(src, timeout=10, phrase_time_limit=phrase_time_limit)
     try:
@@ -80,10 +106,12 @@ def transcribe_local(audio_path=None):
         print(f"  [brain] local ASR not available ({e}) — using Google")
     return None
 
-def speak_text(text, voice="en-US-AndrewNeural", rate="+0%"):
+def speak_text(text, voice=None, rate=None):
     """Return a base64 WAV of the spoken text (robot speaker)."""
     try:
         import edge_tts
+        voice = voice or VOICE
+        rate = rate or RATE
         outfile = "/tmp/brain_tts.wav"
         edge_tts.Communicate(text, voice=voice, rate=rate).save_wav(outfile)
         with open(outfile, "rb") as f:
@@ -142,9 +170,9 @@ def get_caller_name():
 
 def run():
     answer()
-    print("  [brain] Bot is ready — listening for the caller.")
+    print("  [brain] Bot is ready — listening for the caller. (bi-directional = robot talks & listens continuously)")
     while True:
-        text = listen()
+        text = listen(phrase_time_limit=20)
         if not text:
             continue
         send_transcript(text)                       # tell middleware we transcribed
@@ -157,18 +185,15 @@ def run():
             handoff(res.get("intent"))
             speak_text("Thank you for your patience. An expert is on the way.")
             play_audio(speak_text("Thank you for your patience. An expert is on the way."))
-            time.sleep(12)   # watch the queue for a human to pick it up
+            time.sleep(HANDOFF_TIMEOUT)   # watch the queue for a human to pick it up
             cancel()
             return
         speak_text(res["responseText"])
         play_audio(speak_text(res["responseText"]))
-        print(f"  [brain] replied ({res.get('intent')}); type 'break' to end.")
-        try:
-            cmd = input("  [brain] Reply again? [y/N] ").strip().lower()
-            if cmd == "break":
-                cancel(); return
-        except EOFError:
-            cancel(); return
+        print(f"  [brain] replied ({res.get('intent')}). Robot is waiting for you to speak again.")
+        # bi-directional: no prompt. Keep listening until the caller speaks.
+        # (The microphone stays active; the speech_recognition library detects
+        #  the end of the caller's speech automatically via energy/pause thresholds.)
 
 # ---------------------------------------------------------------- test replay
 

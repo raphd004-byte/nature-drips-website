@@ -6,7 +6,13 @@
     "holdMessage": "Thank you for your patience. An expert is on the way to attend to your call.",
     "handoffMessage": "Due to the current volume of calls, an expert will attend to your call shortly. We appreciate your patience.",
     "hangupMessage": "Thank you for calling Nature Drips. Have a great day.",
-    "handoffTimeoutSeconds": 300
+    "handoffTimeoutSeconds": 300,
+    "echoSuppress": true
+  },
+  "tts": {
+    "voice": "en-US-AndrewNeural",
+    "rate": "+0%",
+    "lang": "en-US"
   },
   "nlu": {
     "type": "hybrid",

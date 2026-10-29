@@ -233,12 +233,44 @@ function sendSmsAlert(call, reason) {
   const phone = (call && call.phone) || '';
   const text = `🗣 Nature Drips voice alert — ${reason}. Caller → ${phone} (session ${call.id}).`;
 
+  // ---- Twilio provider ----
   if (cfg.provider === 'twilio' && cfg.twilio && cfg.twilio.enabled) {
-    console.log('[voice][sms] twilio enabled but not connected — set TWILIO_ACCOUNT_SID etc.');
-    return false;
+    try {
+      // load the twilio module only if enabled so the stack still boots without it
+      const twilio = require('twilio');
+    } catch (e) {
+      console.warn('[voice][sms] twilio enabled but module not installed (pip install twilio). Set TWILIO_ACCOUNT_SID etc.');
+      return false;
+    }
+    try {
+      const twilio = require('twilio');
+      const accountSid = process.env[cfg.twilio.accountSidEnv] || cfg.twilio.accountSidEnv;
+      const authToken = process.env[cfg.twilio.authTokenEnv] || cfg.twilio.authTokenEnv;
+      const from = process.env[cfg.twilio.fromEnv] || cfg.twilio.fromEnv;
+      if (!accountSid || !authToken || !from) {
+        console.warn('[voice][sms] twilio missing credentials (set TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM_NUMBER).');
+        return false;
+      }
+      const client = new twilio(accountSid, authToken);
+      client.messages.create({
+        body: text,
+        to: phone,
+        from: from,
+      }).then((msg) => {
+        console.log('[voice][sms] alert sent via Twilio to', phone, 'msg', msg.sid);
+        return true;
+      }).catch((e) => {
+        console.warn('[voice][sms] twilio send failed:', e.message);
+        return false;
+      });
+      return true;
+    } catch (e) {
+      console.warn('[voice][sms] failed:', e.message);
+      return false;
+    }
   }
 
-  // Default webhook (env SMS_WEBHOOK_URL or a local listener)
+  // ---- Default webhook (env SMS_WEBHOOK_URL or a local listener) ----
   const url = process.env[cfg.webhookUrlEnv] || 'http://localhost:8080/sms';
   try {
     const body = { text, to: phone, sessionId: call.id, from: (CONFIG.office && CONFIG.office.smsPhone) || '' };

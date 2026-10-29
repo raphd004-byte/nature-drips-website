@@ -9,9 +9,9 @@ to a human expert with an SMS alert.
 | Path | Purpose |
 |---|---|
 | `backend/voice/voice.js` | Call state machine, NLU (rule engine or local LLM), queue, SMS alert |
-| `backend/voice/config.json` | Voice greeting, handoff messages, NLU/SMS/LLM settings |
+| `backend/voice/config.json` | Voice greeting, handoff messages, NLU/SMS/LLM/TTS settings |
 | `backend/voice/README-voice.md` | This doc |
-| `backend/brain/brain.py` | Robot "brain" sample (Python: listen, transcribe, speak) |
+| `backend/brain/brain.py` | Robot "brain" sample (Python: listen, transcribe, speak - bi-directional) |
 | `backend/brain/requirements.txt` | Brain dependencies |
 | `backend/server.js` | Original website API + voice router mounted at `/voice` |
 
@@ -24,7 +24,10 @@ Caller -> Phone (VoIP/SIP/cloud/FXO) -> Robot speaker/mic
    -> Admin panel: queue view + handoff
 ```
 
-### REST API (robot + admin)
+The robot brain runs **bi-directionally**: it listens, transcribes, understands,
+speaks back, then goes back to listening — no manual "press any key" prompts.
+
+## REST API (robot + admin)
 
 | Method | Path | Purpose |
 |---|---|---|
@@ -41,13 +44,46 @@ Caller -> Phone (VoIP/SIP/cloud/FXO) -> Robot speaker/mic
 
 Audio files are served statically at `/voice/audio/…`.
 
-## Setup
+## Bi-directional voice loop (brain.py)
 
-1. Install the brain's deps: `pip install -r backend/brain/requirements.txt`
-2. Start the middleware: `cd backend && npm start` (Node 18+)
-3. Answer a call (curl):  
-   `curl -X POST http://localhost:3000/voice/calls -d '{"phone":"+92 300 1234567","callSid":"t1"}'`
-4. Drive the loop: see `backend/brain/brain.py` (`python brain.py`).
+The robot brain runs a continuous loop:
+
+1. `answer()` - POST /voice/calls (answer)
+2. `listen()` - robot mic listens (voice activity detection, continuous)
+3. `send_transcript()` - POST /voice/calls/:id/transcript
+4. `understand()` - POST /voice/calls/:id/understand (NLU)
+5. `speak_text()` - POST /voice/calls/:id/audio (TTS)
+6. On handoff/hold - POST /voice/calls/:id/handoff + SMS alert
+7. Robot goes back to listening (no "press any key" prompt)
+
+The run loop keeps the conversation going in both directions until a handoff
+is triggered or the call is cancelled.
+
+## Voice & TTS settings (backend/voice/config.json)
+
+- `tts.voice` - edge-tts voice (`en-US-AndrewNeural` by default; change to your voice)
+- `tts.rate` - speaking rate (`+0%`), e.g. `+10%` for faster, `-10%` for slower
+- `tts.lang` - language (`en-US`)
+- `voice.echoSuppress` - when `true`, the brain reduces echo between mic & speaker
+- `voice.greeting` / `voice.holdMessage` / `voice.handoffMessage` / `voice.hangupMessage`
+- `voice.handoffTimeoutSeconds` - how long to wait for a human to pick up after handoff
+
+## SMS provider
+
+Two providers. Pick one in `voice/config.json`:
+
+**Webhook (default, no key)**
+```json
+"sms": { "provider": "webhook", "webhookUrlEnv": "SMS_WEBHOOK_URL", ... }
+```
+Set `SMS_WEBHOOK_URL` (env) to a listener that accepts `POST {text, to, sessionId}`.
+
+**Twilio (SMS alerts)**
+```json
+"sms": { "provider": "twilio", "twilio": { "enabled": true, ... } }
+```
+Set env vars: TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM_NUMBER
+Then `pip install twilio` (only needed for Twilio).
 
 ## Phone line
 
@@ -58,7 +94,7 @@ greeting is a file the gateway replays.
 
 ## Handoff
 
-When NLU returns `action=handoff`, the middleware:
+When NLU returns `action=handoff` or `intent=urgent`, the middleware:
 - marks the call `on-hold`,
 - plays the hold message,
 - sends an SMS alert to `office.smsPhone` (configurable webhook or Twilio),
